@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- Custom Hamburger Menu Icon at the top right -->
+    <!-- Menu Icon at the top right -->
     <ImageButton
         android:id="@+id/menuButton"
         android:layout_width="wrap_content"
@@ -26,18 +26,15 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp" />
 
-    <!-- Plus Button at the bottom center -->
-    <ImageButton
-        android:id="@+id/plusButton"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@android:drawable/ic_input_add"
-        android:background="@drawable/circular_button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="Plus Button"
-        android:elevation="8dp"/>
+    <!-- RecyclerView for displaying notes -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/separator"
+        android:layout_above="@id/separatorBelow"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
 
     <!-- Separator line above the plus button -->
     <View
@@ -48,4 +45,17 @@
         android:layout_above="@id/plusButton"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp" />
+
+    <!-- Plus Button at the bottom center -->
+    <ImageButton
+        android:id="@+id/plusButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/circular_button"
+        android:src="@drawable/ic_plus_blue"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Plus Button"
+        android:elevation="8dp" />
 </RelativeLayout>
