@@ -16,6 +16,16 @@
         android:layout_marginEnd="16dp"
         android:contentDescription="Menu Button" />
 
+    <!-- Separator line below the menu button -->
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_below="@id/menuButton"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
     <!-- Plus Button at the bottom center -->
     <ImageButton
         android:id="@+id/plusButton"
@@ -29,4 +39,13 @@
         android:contentDescription="Plus Button"
         android:elevation="8dp"/>
 
+    <!-- Separator line above the plus button -->
+    <View
+        android:id="@+id/separatorBelow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_above="@id/plusButton"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
 </RelativeLayout>
