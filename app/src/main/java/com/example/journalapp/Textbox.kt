@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 class Textbox : ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.textbox)
     }
 }
 
