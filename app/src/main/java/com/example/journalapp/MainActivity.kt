@@ -1,5 +1,6 @@
 package com.example.journalapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.Toast
@@ -17,8 +18,11 @@ class MainActivity : AppCompatActivity() {
 
         val plusButton: ImageButton = findViewById(R.id.plusButton)
 
+        // Set up the click listener to navigate to NoteDetailActivity
         plusButton.setOnClickListener {
-            Toast.makeText(this, "Plus button clicked!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, NoteDetailActivity::class.java)
+            intent.putExtra("NOTE_ID", -1) // -1 means creating a new note
+            startActivity(intent)
         }
 
         // Load the JSON from assets and parse it into notes

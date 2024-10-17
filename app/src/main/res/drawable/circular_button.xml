@@ -1,8 +1,11 @@
-<!-- res/drawable/circular_button.xml -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
     <solid android:color="@color/purple_500" />
     <size
-        android:width="70dp"
-        android:height="70dp" />
-    <corners android:radius="35dp" />
+        android:width="48dp"
+        android:height="48dp" />
+    <stroke
+        android:width="2dp"
+        android:color="@color/purple_700" />
 </shape>
