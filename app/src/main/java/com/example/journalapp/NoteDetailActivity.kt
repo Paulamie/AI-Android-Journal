@@ -1,92 +1,95 @@
-//package com.example.journalapp
-//
-//import android.os.Bundle
-//import androidx.appcompat.app.AppCompatActivity
-//import com.example.journalapp.databinding.ActivityNoteDetailBinding
-//
-//class NoteDetailActivity : AppCompatActivity() {
-//    private lateinit var binding: ActivityNoteDetailBinding
-//    private var noteId: Int? = null
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        binding = ActivityNoteDetailBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        noteId = intent.getIntExtra("NOTE_ID", -1)
-//
-//        noteId?.let {
-//            if (it != -1) {
-//                loadNoteDetails(it)
-//            }
-//        }
-//
-//        binding.btnSave.setOnClickListener {
-//            saveNote()
-//        }
-//    }
-//
-//    private fun loadNoteDetails(noteId: Int) {
-//        // Load note details from database
-//    }
-//
-//    private fun saveNote() {
-//        val title = binding.etNoteTitle.text.toString()
-//        val content = binding.etNoteContent.text.toString()
-//        // Save the note to the database
-//    }
-//}
-
-
 package com.example.journalapp
 
 import android.os.Bundle
-import android.widget.Toast // Add this import for Toast
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.journalapp.databinding.ActivityNoteDetailBinding
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.File
+import java.io.InputStream
+import com.example.journalapp.Note
+import com.example.journalapp.NotesResponse
+
 
 class NoteDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNoteDetailBinding
-    private var noteId: Int? = null
+    private var notes: MutableList<Note> = mutableListOf()
+    private var currentIndex: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNoteDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Get the note ID from the Intent
-        noteId = intent.getIntExtra("NOTE_ID", -1)
+        notes = loadNotes()  // Load existing notes from storage
 
-        // Check if it's a new note or an existing one
-        if (noteId != -1) {
-            loadNoteDetails(noteId!!)
+        // Intents could pass the index of the note to be edited
+        currentIndex = intent.getIntExtra("note_index", -1)
+
+        if (currentIndex != -1 && currentIndex < notes.size) {
+            loadNoteDetails(currentIndex)  // Load note details for editing
         }
 
-        // Save the note when the save button is clicked
         binding.btnSave.setOnClickListener {
-            saveNote()
+            if (currentIndex == -1) {
+                addNote()  // Add new note
+            } else {
+                updateNote()  // Update existing note
+            }
         }
     }
 
-    // Function to load note details if the note exists
-    private fun loadNoteDetails(noteId: Int) {
-        // Here you would load the note details for editing
-        binding.etNoteTitle.setText("Existing Note Title")
-        binding.etNoteContent.setText("Existing Note Content")
+    private fun loadNoteDetails(index: Int) {
+        binding.etNoteTitle.setText(notes[index].title)
+        binding.etNoteContent.setText(notes[index].content)
     }
 
-    // Function to save a new note or update an existing note
-    private fun saveNote() {
-        val title = binding.etNoteTitle.text.toString()
-        val content = binding.etNoteContent.text.toString()
-        if (noteId == -1) {
-            // Handle the logic for saving a new note
-            Toast.makeText(this, "New note saved", Toast.LENGTH_SHORT).show() // Toast message for new note
+    private fun loadNotes(): MutableList<Note> {
+        val fileName = "notes.json"
+        val file = File(filesDir, fileName)
+        val json: String = if (file.exists()) {
+            file.readText()
         } else {
-            // Handle the logic for updating an existing note
-            Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show() // Toast message for updating a note
+            val inputStream: InputStream = assets.open(fileName)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            String(buffer, Charsets.UTF_8)
         }
-        finish() // Close the activity after saving
+
+        val notesResponse = Gson().fromJson(json, NotesResponse::class.java)
+        return notesResponse.notes.toMutableList()
+    }
+
+    private fun addNote() {
+        val newTitle = binding.etNoteTitle.text.toString()
+        val newContent = binding.etNoteContent.text.toString()
+        notes.add(Note(newTitle, newContent))
+        saveNotesToFile()
+        Toast.makeText(this, "New note added", Toast.LENGTH_SHORT).show()
+        finish()
+    }
+
+    private fun updateNote() {
+        val updatedTitle = binding.etNoteTitle.text.toString()
+        val updatedContent = binding.etNoteContent.text.toString()
+        if (currentIndex != -1 && currentIndex < notes.size) {
+            notes[currentIndex] = notes[currentIndex].copy(title = updatedTitle, content = updatedContent)
+            saveNotesToFile()
+            Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show()
+            finish()
+        } else {
+            Toast.makeText(this, "Error updating note", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveNotesToFile() {
+        val notesResponse = NotesResponse(notes)
+        val json = Gson().toJson(notesResponse)
+        val fileName = "notes.json"
+        val file = File(filesDir, fileName)
+        file.writeText(json)
     }
 }
-
