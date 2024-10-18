@@ -10,5 +10,7 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="title_activity_note_detail">Note Details</string>
     <string name="add_note">Add Note</string>
-
+    <string name="random_question">Random Journal Question</string>
+    <string name="journal_prompt">What do you want to write about today?</string>
+    <string name="confirm_question">Confirm Question</string>
 </resources>

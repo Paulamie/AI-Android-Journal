@@ -7,29 +7,75 @@
     android:layout_height="match_parent"
     tools:context=".NoteDetailActivity">
 
+    <ImageButton
+        android:id="@+id/questionButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_question"
+        android:contentDescription="@string/random_question"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:padding="12dp" />
+
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/journal_prompt"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/questionButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
+
+    <Button
+        android:id="@+id/confirmQuestionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm_question"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/questionText"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp" />
+
+
     <EditText
         android:id="@+id/etNoteTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/title"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp" />
-
-    <EditText
-        android:id="@+id/etNoteContent"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/content"
-        app:layout_constraintTop_toBottomOf="@id/etNoteTitle"
+        android:inputType="textCapSentences"
+        app:layout_constraintTop_toBottomOf="@id/confirmQuestionButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp" />
+        android:layout_marginEnd="16dp"
+        android:minHeight="48dp"
+        android:importantForAutofill="yes" />
+
+    <EditText
+        android:id="@+id/etNoteContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:hint="@string/content"
+        android:inputType="textMultiLine|textCapSentences"
+        app:layout_constraintTop_toBottomOf="@id/etNoteTitle"
+        app:layout_constraintBottom_toTopOf="@id/btnSave"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:minHeight="48dp"
+        android:importantForAutofill="yes" />
 
     <Button
         android:id="@+id/btnSave"
@@ -39,6 +85,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="32dp"
-        android:layout_marginEnd="16dp" />
+        android:layout_marginEnd="16dp"
+        android:minHeight="48dp"
+        android:minWidth="96dp"
+    />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
