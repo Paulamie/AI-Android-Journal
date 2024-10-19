@@ -10,8 +10,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import java.io.File
 import java.io.InputStream
+import java.util.Calendar
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 class MainActivity : AppCompatActivity() {
+
+    private var streak = Streak(count = 0, lastDate = 0L) // Initialize streak
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_NOTE && resultCode == RESULT_OK) {
             // A note was added or updated, reload the notes
             reloadNotes()
+            checkAndUpdateStreak() // Check and update the streak after a new note
         }
     }
 
@@ -87,4 +99,63 @@ class MainActivity : AppCompatActivity() {
             null  // Return null if there's an error loading from assets
         }
     }
+
+    // After checking and updating the streak, add a way to navigate to StreakActivity
+    private fun checkAndUpdateStreak() {
+        val currentTime = System.currentTimeMillis()
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = currentTime
+        val today = calendar.get(Calendar.DAY_OF_YEAR)
+        val lastDate = Calendar.getInstance().apply { timeInMillis = streak.lastDate }
+
+        if (today == lastDate.get(Calendar.DAY_OF_YEAR) && streak.lastDate != 0L) {
+            // Do nothing, user already created a note today
+            return
+        } else if (today == lastDate.get(Calendar.DAY_OF_YEAR) + 1) {
+            // Increment the streak count if the last note was created yesterday
+            streak.count++
+        } else {
+            // Reset the streak count if there was a break in the streak
+            streak.count = 1
+        }
+
+        // Update the last date to today's date
+        streak.lastDate = currentTime
+
+        // Navigate to StreakActivity when needed
+        val intent = Intent(this, StreakActivity::class.java).apply {
+            putExtra("STREAK_DATA", streak) // Pass the streak data
+        }
+        startActivity(intent)
+    }
+}
+
+@Composable
+fun StreakPage(streak: Streak, onNavigateBack: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Current Streak: ${streak.count}",
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = "Last Active Date: ${formatDate(streak.lastDate)}",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Spacer(modifier = Modifier.height(16.dp)) // Optional space
+
+        Button(onClick = { onNavigateBack() }) { // Use Button from Compose
+            Text("Back")
+        }
+    }
+}
+
+// Helper function to format the last active date
+fun formatDate(timestamp: Long): String {
+    val calendar = Calendar.getInstance().apply { timeInMillis = timestamp }
+    return "${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
 }
