@@ -21,11 +21,11 @@ class StreakActivity : ComponentActivity() {
         // Get the streak data passed from the intent
         streak = intent.getSerializableExtra("STREAK_DATA") as? Streak ?: Streak(0, 0L)
 
-        setContent {
-            StreakPage(streak = streak) {
-                // Handle navigation back to the main activity
-                finish() // Close the StreakActivity and go back to the previous one
-            }
+//        setContent {
+//            StreakPage(streak = streak) {
+//                // Handle navigation back to the main activity
+//                finish() // Close the StreakActivity and go back to the previous one
+//            }
         }
     }
-}
+
