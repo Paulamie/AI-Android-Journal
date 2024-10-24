@@ -58,4 +58,18 @@
         android:layout_marginBottom="16dp"
         android:contentDescription="Plus Button"
         android:elevation="8dp" />
+
+    <!-- Trash icon for deleting selected notes -->
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_trash"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_above="@id/plusButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:visibility="gone"
+        android:contentDescription="Delete Selected" />
+
 </RelativeLayout>

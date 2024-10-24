@@ -2,90 +2,125 @@ package com.example.journalapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.journalapp.databinding.ActivityMainBinding
 import com.google.gson.Gson
 import java.io.File
 import java.io.InputStream
-import java.util.Calendar
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 class MainActivity : AppCompatActivity() {
 
-    private var streak = Streak(count = 0, lastDate = 0L) // Initialize streak
+    private lateinit var binding: ActivityMainBinding
+    private var isInSelectionMode = false
+    private val selectedNotes = mutableListOf<Note>() // List of selected notes for deletion
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val plusButton: ImageButton = findViewById(R.id.plusButton)
-
-        // Set up the click listener to navigate to NoteDetailActivity
-        plusButton.setOnClickListener {
-            val intent = Intent(this, NoteDetailActivity::class.java)
-            intent.putExtra("NOTE_ID", -1) // -1 means creating a new note
-            startActivityForResult(intent, REQUEST_CODE_NOTE)
-        }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         reloadNotes()
-    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+        // Floating action button for adding a new note
+        binding.plusButton.setOnClickListener {
+            if (!isInSelectionMode) {
+                val intent = Intent(this, NoteDetailActivity::class.java)
+                intent.putExtra("NOTE_ID", -1) // -1 means creating a new note
+                startActivityForResult(intent, REQUEST_CODE_NOTE)
+            }
+        }
 
-        if (requestCode == REQUEST_CODE_NOTE && resultCode == RESULT_OK) {
-            // A note was added or updated, reload the notes
-            reloadNotes()
-            checkAndUpdateStreak() // Check and update the streak after a new note
+        // Delete button for deleting selected notes
+        binding.deleteButton.setOnClickListener {
+            deleteSelectedNotes()
         }
     }
 
-    companion object {
-        private const val REQUEST_CODE_NOTE = 1
-    }
-
-
-    // Reload the notes each time the activity is resumed
-    override fun onResume() {
-        super.onResume()
-        reloadNotes() // Reload the notes when returning from the note detail screen
-    }
-
-    // This function handles reloading the notes and updating the RecyclerView
+    // Reload notes into the RecyclerView
     private fun reloadNotes() {
         val json = loadNotesFromPrivateStorage() ?: loadNotesFromAssets()
         if (json != null) {
-            val notes = Gson().fromJson(json, NotesResponse::class.java).notes
-            val notesRecyclerView: RecyclerView = findViewById(R.id.notesRecyclerView)
+            val notes = Gson().fromJson(json, NotesResponse::class.java).notes.toMutableList()
+            val notesRecyclerView: RecyclerView = binding.notesRecyclerView
             notesRecyclerView.layoutManager = LinearLayoutManager(this)
-            notesRecyclerView.adapter = NotesAdapter(notes) // Reset the adapter with updated notes
+
+            notesRecyclerView.adapter = NotesAdapter(notes, { position ->
+                if (isInSelectionMode) {
+                    toggleSelection(position)
+                } else {
+                    val intent = Intent(this, NoteDetailActivity::class.java)
+                    intent.putExtra("NOTE_ID", position)
+                    startActivityForResult(intent, REQUEST_CODE_NOTE)
+                }
+            }, { position ->
+                isInSelectionMode = true
+                toggleSelection(position)
+            })
         } else {
             Toast.makeText(this, "Failed to load notes data", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // Load notes from private storage
-    private fun loadNotesFromPrivateStorage(): String? {
-        val fileName = "notes.json"
-        val file = File(filesDir, fileName)
-        return if (file.exists()) {
-            file.readText()  // Return the content of notes.json from private storage
+    // Toggle the selection of a note
+    private fun toggleSelection(position: Int) {
+        val adapter = binding.notesRecyclerView.adapter as NotesAdapter
+        val note = adapter.notes[position]
+        note.isSelected = !note.isSelected
+
+        if (note.isSelected) {
+            selectedNotes.add(note)
         } else {
-            null  // Return null if the file does not exist
+            selectedNotes.remove(note)
+        }
+
+        adapter.notifyItemChanged(position)
+
+        // Show or hide the trash icon based on the selection
+        if (selectedNotes.isEmpty()) {
+            isInSelectionMode = false
+            binding.deleteButton.visibility = View.GONE // Hide trash icon when nothing is selected
+        } else {
+            isInSelectionMode = true
+            binding.deleteButton.visibility = View.VISIBLE // Show trash icon when items are selected
         }
     }
 
-    // Load notes from assets as a fallback
+    // Delete the selected notes
+    private fun deleteSelectedNotes() {
+        val adapter = binding.notesRecyclerView.adapter as NotesAdapter
+        adapter.notes.removeAll(selectedNotes)
+        adapter.notifyDataSetChanged()
+
+        // Clear selection mode and hide the trash icon
+        selectedNotes.clear()
+        isInSelectionMode = false
+        binding.deleteButton.visibility = View.GONE
+
+        // Save the updated list to storage
+        saveNotesToFile(adapter.notes)
+    }
+
+    // Handle returning from NoteDetailActivity
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_NOTE && resultCode == RESULT_OK) {
+            // Reload the notes after adding or updating a note
+            reloadNotes()
+        }
+    }
+
+    // Load notes from private storage (if exists)
+    private fun loadNotesFromPrivateStorage(): String? {
+        val file = File(filesDir, "notes.json")
+        return if (file.exists()) file.readText() else null
+    }
+
+    // Load notes from assets if private storage doesn't have any
     private fun loadNotesFromAssets(): String? {
         return try {
             val inputStream: InputStream = assets.open("notes.json")
@@ -93,69 +128,54 @@ class MainActivity : AppCompatActivity() {
             val buffer = ByteArray(size)
             inputStream.read(buffer)
             inputStream.close()
-            String(buffer, Charsets.UTF_8)  // Return the content of notes.json from assets
+            String(buffer, Charsets.UTF_8)
         } catch (e: Exception) {
             e.printStackTrace()
-            null  // Return null if there's an error loading from assets
+            null
         }
     }
 
-    // After checking and updating the streak, add a way to navigate to StreakActivity
-    private fun checkAndUpdateStreak() {
-        val currentTime = System.currentTimeMillis()
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = currentTime
-        val today = calendar.get(Calendar.DAY_OF_YEAR)
-        val lastDate = Calendar.getInstance().apply { timeInMillis = streak.lastDate }
-
-        if (today == lastDate.get(Calendar.DAY_OF_YEAR) && streak.lastDate != 0L) {
-            // Do nothing, user already created a note today
-            return
-        } else if (today == lastDate.get(Calendar.DAY_OF_YEAR) + 1) {
-            // Increment the streak count if the last note was created yesterday
-            streak.count++
-        } else {
-            // Reset the streak count if there was a break in the streak
-            streak.count = 1
+    // Save the notes back to the file
+    private fun saveNotesToFile(notes: List<Note>) {
+        val notesResponse = NotesResponse(notes)
+        val json = Gson().toJson(notesResponse)
+        val file = File(filesDir, "notes.json")
+        try {
+            file.writeText(json)
+            Toast.makeText(this, "Notes saved", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error saving notes", Toast.LENGTH_SHORT).show()
         }
+    }
 
-        // Update the last date to today's date
-        streak.lastDate = currentTime
-
-        // Navigate to StreakActivity when needed
-        val intent = Intent(this, StreakActivity::class.java).apply {
-            putExtra("STREAK_DATA", streak) // Pass the streak data
-        }
-        startActivity(intent)
+    companion object {
+        private const val REQUEST_CODE_NOTE = 1
     }
 }
 
-@Composable
-fun StreakPage(streak: Streak, onNavigateBack: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Current Streak: ${streak.count}",
-            style = MaterialTheme.typography.bodyLarge
-        )
-        Text(
-            text = "Last Active Date: ${formatDate(streak.lastDate)}",
-            style = MaterialTheme.typography.bodyLarge
-        )
 
-        Spacer(modifier = Modifier.height(16.dp)) // Optional space
+////    private fun checkAndUpdateStreak() {
+////        val currentTime = System.currentTimeMillis()
+////        val calendar = Calendar.getInstance()
+////        calendar.timeInMillis = currentTime
+////        val today = calendar.get(Calendar.DAY_OF_YEAR)
+////        val lastDate = Calendar.getInstance().apply { timeInMillis = streak.lastDate }
+////
+////        if (today == lastDate.get(Calendar.DAY_OF_YEAR) && streak.lastDate != 0L) {
+////            return
+////        } else if (today == lastDate.get(Calendar.DAY_OF_YEAR) + 1) {
+////            streak.count++
+////        } else {
+////            streak.count = 1
+////        }
+////
+////        streak.lastDate = currentTime
+////
+////        val intent = Intent(this, StreakActivity::class.java).apply {
+////            putExtra("STREAK_DATA", streak)
+////        }
+////        startActivity(intent)
+////    }
+////}
 
-        Button(onClick = { onNavigateBack() }) { // Use Button from Compose
-            Text("Back")
-        }
-    }
-}
 
-// Helper function to format the last active date
-fun formatDate(timestamp: Long): String {
-    val calendar = Calendar.getInstance().apply { timeInMillis = timestamp }
-    return "${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
-}
