@@ -11,6 +11,10 @@ import com.example.journalapp.databinding.ActivityMainBinding
 import com.google.gson.Gson
 import java.io.File
 import java.io.InputStream
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.widget.ImageButton
+import android.widget.PopupMenu
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,6 +42,36 @@ class MainActivity : AppCompatActivity() {
         binding.deleteButton.setOnClickListener {
             deleteSelectedNotes()
         }
+
+        // Show dropdown menu when menuButton is clicked
+        binding.menuButton.setOnClickListener { view ->
+            showDropdownMenu(view)
+        }
+    }
+
+    private fun showDropdownMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        val inflater: MenuInflater = popupMenu.menuInflater
+        inflater.inflate(R.menu.menu_main, popupMenu.menu)
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_settings -> {
+                    Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.action_help -> {
+                    Toast.makeText(this, "Help selected", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.action_logout -> {
+                    Toast.makeText(this, "Logout selected", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.show()
     }
 
     // Reload notes into the RecyclerView
@@ -152,6 +186,8 @@ class MainActivity : AppCompatActivity() {
         private const val REQUEST_CODE_NOTE = 1
     }
 }
+
+
 
 
 ////    private fun checkAndUpdateStreak() {
