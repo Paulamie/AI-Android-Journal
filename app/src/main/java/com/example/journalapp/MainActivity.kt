@@ -2,25 +2,37 @@ package com.example.journalapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.journalapp.databinding.ActivityMainBinding
 import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.InputStream
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.widget.ImageButton
-import android.widget.PopupMenu
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var isInSelectionMode = false
     private val selectedNotes = mutableListOf<Note>() // List of selected notes for deletion
+
+    // Retrofit instance for API service
+    private val retrofit = Retrofit.Builder()
+        .baseUrl("http://10.0.2.2:5000/") // Replace with your actual server URL
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val apiService = retrofit.create(ApiService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +58,11 @@ class MainActivity : AppCompatActivity() {
         // Show dropdown menu when menuButton is clicked
         binding.menuButton.setOnClickListener { view ->
             showDropdownMenu(view)
+        }
+
+        // Button to get advice based on notes
+        binding.apiButton.setOnClickListener {
+            getAdviceForNotes()
         }
     }
 
@@ -182,36 +199,61 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Fetch advice for the selected notes and display in RecyclerView
+    private fun getAdviceForNotes() {
+        val notes = (binding.notesRecyclerView.adapter as? NotesAdapter)?.notes ?: return
+        val request = AdviceRequest(notes)
+
+        apiService.getAdvice(request).enqueue(object : Callback<AdviceResponse> {
+            override fun onResponse(call: Call<AdviceResponse>, response: Response<AdviceResponse>) {
+                if (response.isSuccessful) {
+                    val advice = response.body()?.advice
+                    displayAdviceInRecyclerView(advice)
+                } else {
+                    Toast.makeText(this@MainActivity, "Failed to get advice", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<AdviceResponse>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    // Display advice in AIbot RecyclerView
+    private fun displayAdviceInRecyclerView(advice: String?) {
+        val adviceList = listOf(advice ?: "No advice available")
+        binding.AIbot.layoutManager = LinearLayoutManager(this)
+        binding.AIbot.adapter = AdviceAdapter(adviceList)
+    }
+
     companion object {
         private const val REQUEST_CODE_NOTE = 1
     }
 }
 
 
-
-
-////    private fun checkAndUpdateStreak() {
-////        val currentTime = System.currentTimeMillis()
-////        val calendar = Calendar.getInstance()
-////        calendar.timeInMillis = currentTime
-////        val today = calendar.get(Calendar.DAY_OF_YEAR)
-////        val lastDate = Calendar.getInstance().apply { timeInMillis = streak.lastDate }
-////
-////        if (today == lastDate.get(Calendar.DAY_OF_YEAR) && streak.lastDate != 0L) {
-////            return
-////        } else if (today == lastDate.get(Calendar.DAY_OF_YEAR) + 1) {
-////            streak.count++
-////        } else {
-////            streak.count = 1
-////        }
-////
-////        streak.lastDate = currentTime
-////
-////        val intent = Intent(this, StreakActivity::class.java).apply {
-////            putExtra("STREAK_DATA", streak)
-////        }
-////        startActivity(intent)
-////    }
-////}
-
+//    private fun checkAndUpdateStreak() {
+//        val currentTime = System.currentTimeMillis()
+//        val calendar = Calendar.getInstance()
+//        calendar.timeInMillis = currentTime
+//        val today = calendar.get(Calendar.DAY_OF_YEAR)
+//        val lastDate = Calendar.getInstance().apply { timeInMillis = streak.lastDate }
+//
+//        if (today == lastDate.get(Calendar.DAY_OF_YEAR) && streak.lastDate != 0L) {
+//            return
+//        } else if (today == lastDate.get(Calendar.DAY_OF_YEAR) + 1) {
+//            streak.count++
+//        } else {
+//            streak.count = 1
+//        }
+//
+//        streak.lastDate = currentTime
+//
+//        val intent = Intent(this, StreakActivity::class.java).apply {
+//            putExtra("STREAK_DATA", streak)
+//        }
+//        startActivity(intent)
+//    }
+//}
 

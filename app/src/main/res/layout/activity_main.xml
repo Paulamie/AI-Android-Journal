@@ -1,10 +1,8 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp"
-    tools:ignore="ExtraText">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <!-- Menu Icon at the top right -->
     <ImageButton
@@ -15,53 +13,34 @@
         android:background="?android:attr/selectableItemBackground"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
         android:contentDescription="Menu Button" />
 
-    <!-- Separator line below the menu button -->
-    <View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CCCCCC"
+    <!-- Add API Button for advice retrieval -->
+    <Button
+        android:id="@+id/apiButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Advice"
         android:layout_below="@id/menuButton"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp" />
 
-    <!-- add the api widget here -->
+    <!-- RecyclerView for displaying advice -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/AIbot"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/rounded_bg"
-        android:elevation="9dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:backgroundTintMode="multiply"
-        android:padding="10dp" />
+        android:layout_below="@id/apiButton"
+        android:layout_marginTop="16dp" />
 
     <!-- RecyclerView for displaying notes -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@id/separator"
-        android:layout_above="@id/separatorBelow"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Separator line above the plus button -->
-    <View
-        android:id="@+id/separatorBelow"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CCCCCC"
+        android:layout_below="@id/AIbot"
         android:layout_above="@id/plusButton"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginTop="8dp" />
 
     <!-- Plus Button at the bottom center -->
     <ImageButton
@@ -72,9 +51,7 @@
         android:src="@drawable/ic_plus_blue"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="Plus Button"
-        android:elevation="8dp" />
+        android:contentDescription="Plus Button" />
 
     <!-- Trash icon for deleting selected notes -->
     <ImageButton
@@ -82,10 +59,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_trash"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_above="@id/plusButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="24dp"
         android:visibility="gone"
         android:contentDescription="Delete Selected" />
 
