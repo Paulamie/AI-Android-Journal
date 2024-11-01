@@ -4,34 +4,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <!-- Toolbar at the top -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Journal App"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
     <!-- Menu Icon at the top right -->
     <ImageButton
         android:id="@+id/menuButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
         android:src="@drawable/hamburger_icon"
         android:background="?android:attr/selectableItemBackground"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:contentDescription="Menu Button" />
+        android:contentDescription="@string/menu_button" />
 
     <!-- Add API Button for advice retrieval -->
     <Button
         android:id="@+id/apiButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Advice"
-        android:layout_below="@id/menuButton"
+        android:text="@string/get_advice"
+        android:contentDescription="@string/delete_selected"
+        android:layout_below="@id/toolbar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="20dp"
+        style="@style/Widget.AppCompat.Button.Colored" />
+
+    <!-- Refresh Button, initially hidden -->
+    <ImageButton
+        android:id="@+id/refreshButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_refresh"
+        android:contentDescription="@string/refresh"
+        android:layout_below="@id/apiButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:elevation="8dp"
+        android:visibility="gone" />
 
     <!-- RecyclerView for displaying advice -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/AIbot"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_below="@id/apiButton"
-        android:layout_marginTop="16dp" />
+        android:layout_height="150dp"
+        android:layout_below="@id/refreshButton"
+        android:layout_marginTop="20dp" />
+
 
     <!-- RecyclerView for displaying notes -->
     <androidx.recyclerview.widget.RecyclerView

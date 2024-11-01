@@ -2,14 +2,16 @@ package com.example.journalapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.journalapp.databinding.ActivityMainBinding
 import com.google.gson.Gson
 import retrofit2.Call
@@ -24,7 +26,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var isInSelectionMode = false
-    private val selectedNotes = mutableListOf<Note>() // List of selected notes for deletion
+    private val selectedNotes = mutableListOf<Note>()
+    private lateinit var notesAdapter: NotesAdapter
+    private var notesList: MutableList<Note> = mutableListOf()
 
     // Retrofit instance for API service
     private val retrofit = Retrofit.Builder()
@@ -38,6 +42,30 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Set refreshButton initially to GONE
+        binding.refreshButton.visibility = View.GONE
+        Log.d("MainActivity", "Refresh button initially set to GONE")
+
+
+
+        setSupportActionBar(binding.toolbar)
+
+        // Set up RecyclerView and Adapter
+        notesAdapter = NotesAdapter(notesList, { position ->
+            if (isInSelectionMode) {
+                toggleSelection(position)
+            } else {
+                val intent = Intent(this, NoteDetailActivity::class.java)
+                intent.putExtra("NOTE_ID", position)
+                startActivityForResult(intent, REQUEST_CODE_NOTE)
+            }
+        }, { position ->
+            isInSelectionMode = true
+            toggleSelection(position)
+        })
+        binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.notesRecyclerView.adapter = notesAdapter
 
         reloadNotes()
 
@@ -64,7 +92,53 @@ class MainActivity : AppCompatActivity() {
         binding.apiButton.setOnClickListener {
             getAdviceForNotes()
         }
+
+        binding.refreshButton.setOnClickListener {
+            getAdviceForNotes() // Re-fetch advice when refreshing
+        }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_main, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+        searchView.queryHint = "Search notes..."
+
+        // Set up lambda-based expand/collapse actions for the search view
+        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                binding.apiButton.visibility = View.GONE
+                binding.refreshButton.visibility = View.GONE
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                // Only show apiButton if refreshButton is not visible
+                if (binding.refreshButton.visibility != View.VISIBLE) {
+                    binding.apiButton.visibility = View.VISIBLE
+                }
+                return true
+            }
+        })
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchNotes(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                searchNotes(newText)
+                return true
+            }
+        })
+
+        return true
+    }
+
+
 
     private fun showDropdownMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
@@ -91,29 +165,31 @@ class MainActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    // Reload notes into the RecyclerView
     private fun reloadNotes() {
         val json = loadNotesFromPrivateStorage() ?: loadNotesFromAssets()
         if (json != null) {
-            val notes = Gson().fromJson(json, NotesResponse::class.java).notes.toMutableList()
-            val notesRecyclerView: RecyclerView = binding.notesRecyclerView
-            notesRecyclerView.layoutManager = LinearLayoutManager(this)
-
-            notesRecyclerView.adapter = NotesAdapter(notes, { position ->
-                if (isInSelectionMode) {
-                    toggleSelection(position)
-                } else {
-                    val intent = Intent(this, NoteDetailActivity::class.java)
-                    intent.putExtra("NOTE_ID", position)
-                    startActivityForResult(intent, REQUEST_CODE_NOTE)
-                }
-            }, { position ->
-                isInSelectionMode = true
-                toggleSelection(position)
-            })
+            notesList = Gson().fromJson(json, NotesResponse::class.java).notes.toMutableList()
+            notesAdapter.updateNotes(notesList)
+            Log.d("MainActivity", "Notes loaded: ${notesList.size}")
         } else {
             Toast.makeText(this, "Failed to load notes data", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun searchNotes(query: String?) {
+        Log.d("MainActivity", "Search query: $query")
+        val filteredNotes = if (!query.isNullOrEmpty()) {
+            notesList.filter { note ->
+                val matches = note.title.contains(query, ignoreCase = true) || note.content.contains(query, ignoreCase = true)
+                Log.d("MainActivity", "Note '${note.title}' match: $matches")
+                matches
+            }
+        } else {
+            notesList
+        }
+
+        Log.d("MainActivity", "Filtered notes count: ${filteredNotes.size}")
+        notesAdapter.updateNotes(filteredNotes)
     }
 
     // Toggle the selection of a note
@@ -146,32 +222,26 @@ class MainActivity : AppCompatActivity() {
         adapter.notes.removeAll(selectedNotes)
         adapter.notifyDataSetChanged()
 
-        // Clear selection mode and hide the trash icon
         selectedNotes.clear()
         isInSelectionMode = false
         binding.deleteButton.visibility = View.GONE
 
-        // Save the updated list to storage
         saveNotesToFile(adapter.notes)
     }
 
-    // Handle returning from NoteDetailActivity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_NOTE && resultCode == RESULT_OK) {
-            // Reload the notes after adding or updating a note
             reloadNotes()
         }
     }
 
-    // Load notes from private storage (if exists)
     private fun loadNotesFromPrivateStorage(): String? {
         val file = File(filesDir, "notes.json")
         return if (file.exists()) file.readText() else null
     }
 
-    // Load notes from assets if private storage doesn't have any
     private fun loadNotesFromAssets(): String? {
         return try {
             val inputStream: InputStream = assets.open("notes.json")
@@ -186,7 +256,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Save the notes back to the file
     private fun saveNotesToFile(notes: List<Note>) {
         val notesResponse = NotesResponse(notes)
         val json = Gson().toJson(notesResponse)
@@ -199,7 +268,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Fetch advice for the selected notes and display in RecyclerView
+
     private fun getAdviceForNotes() {
         val notes = (binding.notesRecyclerView.adapter as? NotesAdapter)?.notes ?: return
         val request = AdviceRequest(notes)
@@ -209,6 +278,11 @@ class MainActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val advice = response.body()?.advice
                     displayAdviceInRecyclerView(advice)
+
+                    // Hide "Get Advice" and show "Refresh" button
+                    binding.apiButton.visibility = View.GONE
+                    binding.refreshButton.visibility = View.VISIBLE
+                    Log.d("MainActivity", "Visibility changed: apiButton=GONE, refreshButton=VISIBLE")
                 } else {
                     Toast.makeText(this@MainActivity, "Failed to get advice", Toast.LENGTH_SHORT).show()
                 }
@@ -220,7 +294,8 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    // Display advice in AIbot RecyclerView
+
+
     private fun displayAdviceInRecyclerView(advice: String?) {
         val adviceList = listOf(advice ?: "No advice available")
         binding.AIbot.layoutManager = LinearLayoutManager(this)
@@ -231,6 +306,7 @@ class MainActivity : AppCompatActivity() {
         private const val REQUEST_CODE_NOTE = 1
     }
 }
+
 
 
 //    private fun checkAndUpdateStreak() {

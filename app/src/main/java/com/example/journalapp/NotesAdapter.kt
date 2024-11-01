@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import android.util.Log
 
 class NotesAdapter(
-    val notes: MutableList<Note>, // Make the list mutable for deletion
+    var notes: MutableList<Note>, // Make the list mutable for deletion and updating
     private val onNoteClicked: (Int) -> Unit,
     private val onNoteLongClicked: (Int) -> Unit
 ) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
@@ -52,5 +53,12 @@ class NotesAdapter(
     }
 
     override fun getItemCount(): Int = notes.size
-}
 
+    fun updateNotes(newNotes: List<Note>) {
+        notes.clear()
+        notes.addAll(newNotes)
+        notifyDataSetChanged()
+        Log.d("NotesAdapter", "Adapter updated with ${newNotes.size} notes")
+    }
+
+}

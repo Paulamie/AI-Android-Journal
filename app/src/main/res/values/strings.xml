@@ -13,4 +13,15 @@
     <string name="random_question">Random Journal Question</string>
     <string name="journal_prompt">What do you want to write about today?</string>
     <string name="confirm_question">Confirm Question</string>
+    <string name="action_help">Help</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_search">Search</string>
+    <string name="get_advice">Get Advice</string>
+    <string name="delete_selected">Delete Selected</string>
+    <string name="menu_button">Menu Button</string>
+    <string name="plus_button">Plus Button</string>
+    <string name="refresh_button">Refresh</string>
+    <string name="refresh">Refresh</string>
+
+
 </resources>
