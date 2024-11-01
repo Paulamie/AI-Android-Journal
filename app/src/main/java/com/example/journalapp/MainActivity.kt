@@ -19,12 +19,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.InputStream
+import android.widget.Button
+import android.widget.TextView
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var isInSelectionMode = false
     private val selectedNotes = mutableListOf<Note>() // List of selected notes for deletion
+
+    // Streak information
+    private var streakCount = 0
+    private var lastActiveDate: Long = 0
 
     // Retrofit instance for API service
     private val retrofit = Retrofit.Builder()
@@ -40,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         reloadNotes()
+        updateStreakUI() //streak page update
 
         // Floating action button for adding a new note
         binding.plusButton.setOnClickListener {
@@ -79,6 +87,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.action_help -> {
                     Toast.makeText(this, "Help selected", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.action_streak -> { // Handle the "Streak" option
+                    val intent = Intent(this, StreakActivity::class.java) // Replace with your actual Streak Activity
+                    startActivity(intent)
                     true
                 }
                 R.id.action_logout -> {
@@ -227,33 +240,58 @@ class MainActivity : AppCompatActivity() {
         binding.AIbot.adapter = AdviceAdapter(adviceList)
     }
 
+    // Update the streak count based on activity
+    private fun updateStreak() {
+        val currentDate = Calendar.getInstance().timeInMillis
+        val today = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+
+        // Check if last active date is set
+        if (lastActiveDate != 0L) {
+            val lastActiveDay = Calendar.getInstance().apply { timeInMillis = lastActiveDate }.get(Calendar.DAY_OF_YEAR)
+
+            if (today == lastActiveDay) {
+                // Already active today, do nothing
+                return
+            } else if (today == lastActiveDay + 1) {
+                // Active day after last active day
+                streakCount++
+            } else {
+                // Streak broken, reset count
+                streakCount = 1
+            }
+        } else {
+            // First activity
+            streakCount = 1
+        }
+
+        lastActiveDate = currentDate
+        saveStreakData()
+        updateStreakUI()
+    }
+
+    // Save streak data to shared preferences or file
+    private fun saveStreakData() {
+        val prefs = getSharedPreferences("JournalAppPrefs", MODE_PRIVATE)
+        prefs.edit()
+            .putInt("streak_count", streakCount)
+            .putLong("last_active_date", lastActiveDate)
+            .apply()
+    }
+
+    // Update streak UI elements
+    private fun updateStreakUI() {
+            val prefs = getSharedPreferences("JournalAppPrefs", MODE_PRIVATE)
+            val editor = prefs.edit()
+            streakCount++
+
+            // Save the updated streak data
+            editor.putInt("streak_count", streakCount)
+            editor.putLong("last_active_date", System.currentTimeMillis()) // Update last active date
+            editor.apply()
+        }
+
     companion object {
         private const val REQUEST_CODE_NOTE = 1
     }
 }
-
-
-//    private fun checkAndUpdateStreak() {
-//        val currentTime = System.currentTimeMillis()
-//        val calendar = Calendar.getInstance()
-//        calendar.timeInMillis = currentTime
-//        val today = calendar.get(Calendar.DAY_OF_YEAR)
-//        val lastDate = Calendar.getInstance().apply { timeInMillis = streak.lastDate }
-//
-//        if (today == lastDate.get(Calendar.DAY_OF_YEAR) && streak.lastDate != 0L) {
-//            return
-//        } else if (today == lastDate.get(Calendar.DAY_OF_YEAR) + 1) {
-//            streak.count++
-//        } else {
-//            streak.count = 1
-//        }
-//
-//        streak.lastDate = currentTime
-//
-//        val intent = Intent(this, StreakActivity::class.java).apply {
-//            putExtra("STREAK_DATA", streak)
-//        }
-//        startActivity(intent)
-//    }
-//}
 
