@@ -4,25 +4,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     android:padding="16dp"
     android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/streakCountTextView"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Streak: 0" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp"
+        android:background="@drawable/streak">
 
-    <TextView
-        android:id="@+id/lastActiveDateTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Last Active: Never" />
+        <TextView
+            android:id="@+id/streakCountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#9C27B0"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/lastActiveDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last Active: Never"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"
+            android:gravity="end"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/viewDetailsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View Details"
-        android:layout_marginTop="16dp"/>
+        android:textColor="@android:color/white"
+        android:layout_marginTop="24dp"/>
 </LinearLayout>

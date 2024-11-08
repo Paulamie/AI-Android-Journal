@@ -8,6 +8,10 @@
         app:showAsAction="always|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
     <item
+        android:id="@+id/action_streak"
+        android:title="Streak"/>.
+
+    <item
         android:id="@+id/action_settings"
         android:title="Settings" />
     <item

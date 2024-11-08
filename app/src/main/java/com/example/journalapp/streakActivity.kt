@@ -9,9 +9,10 @@ class StreakActivity : AppCompatActivity() {
 
     private lateinit var binding: StreakBinding
 
-    // Variables to hold streak data
-    private var streakCount = 0
-    private var lastActiveDate: Long = 0
+    // Constants for SharedPreferences keys
+    private val PREFS_NAME = "StreakPrefs"
+    private val STREAK_COUNT_KEY = "streak_count"
+    private val LAST_LOGIN_DATE_KEY = "last_login_date"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,27 +21,37 @@ class StreakActivity : AppCompatActivity() {
         binding = StreakBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Load streak data from Shared Preferences
+        // Load streak data and update the UI
         loadStreakData()
-        updateStreakUI()  // Update the UI with loaded data
+        }
 
-        // Example of handling a button click
-        binding.viewDetailsButton.setOnClickListener {
-            // Handle button click (e.g., show details or navigate to another activity)
+    private fun loadStreakData() {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        var streakCount = prefs.getInt(STREAK_COUNT_KEY, 0)
+        val lastLoginDate = prefs.getLong(LAST_LOGIN_DATE_KEY, 0)
+
+        val currentDate = Calendar.getInstance().apply { timeInMillis = System.currentTimeMillis() }.get(Calendar.DAY_OF_YEAR)
+
+        if (lastLoginDate != 0L) {
+            val lastLoginCalendar = Calendar.getInstance().apply { timeInMillis = lastLoginDate }
+            val lastLoginDayOfYear = lastLoginCalendar.get(Calendar.DAY_OF_YEAR)
+
+            // Check if it's a new day to update the streak count
+            if (currentDate == lastLoginDayOfYear + 1) {
+                streakCount++ // New day, increment streak
+            } else if (currentDate != lastLoginDayOfYear) {
+                streakCount = 1 // Reset streak if the last login was not consecutive
+            }
+            } else {
+                streakCount = 1 // First-time login or data initialization
+            }
+
+        // Save the updated streak count and last login date
+        prefs.edit().putInt(STREAK_COUNT_KEY, streakCount).apply()
+        prefs.edit().putLong(LAST_LOGIN_DATE_KEY, System.currentTimeMillis()).apply()
+
+        // Update UI with the streak data
+        binding.streakCountTextView.text = "Current Streak: $streakCount"
+        binding.lastActiveDateTextView.text = "Last Active: ${Calendar.getInstance().apply { timeInMillis = lastLoginDate }.time}"
         }
     }
-
-    // Load streak data from Shared Preferences
-    private fun loadStreakData() {
-        val prefs = getSharedPreferences("JournalAppPrefs", MODE_PRIVATE)
-        streakCount = prefs.getInt("streak_count", 0)
-        lastActiveDate = prefs.getLong("last_active_date", 0)
-    }
-
-    // Update the UI with streak information
-    private fun updateStreakUI() {
-        binding.streakCountTextView.text = "Current Streak: $streakCount"
-        val lastDate = if (lastActiveDate == 0L) "Never" else Calendar.getInstance().apply { timeInMillis = lastActiveDate }.time.toString()
-        binding.lastActiveDateTextView.text = "Last Active: $lastDate"
-    }
-}
