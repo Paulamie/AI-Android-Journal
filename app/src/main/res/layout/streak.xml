@@ -1,48 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/colorSelected"
     android:gravity="center"
-    android:padding="16dp"
-    android:background="@android:color/white">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_width="241dp"
+        android:layout_height="202dp"
+        android:background="@drawable/streak"
+        android:backgroundTint="#308F7CB1"
         android:gravity="center"
-        android:padding="24dp"
-        android:background="@drawable/streak">
+        android:orientation="vertical"
+        android:padding="24dp">
 
         <TextView
             android:id="@+id/streakCountTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#F4F4F5"
+            android:backgroundTint="#00D3D3D3"
+            android:drawableTint="@color/colorPrimaryDark"
+            android:gravity="center"
             android:text="0"
-            android:textColor="#9C27B0"
+            android:textColor="@color/purple_700"
             android:textSize="48sp"
-            android:textStyle="bold"
-            android:gravity="center" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/lastActiveDateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last Active: Never"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
-            android:gravity="end"
             android:layout_gravity="end"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:gravity="end"
+            android:text="Last Active: Never"
+            android:textColor="#4D2A0162"
+            android:textColorLink="@color/colorPrimary"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <Button
         android:id="@+id/viewDetailsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="View Details"
         android:textColor="@android:color/white"
-        android:layout_marginTop="24dp"/>
+        android:visibility="invisible" />
 </LinearLayout>
