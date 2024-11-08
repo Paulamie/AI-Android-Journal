@@ -1,31 +1,46 @@
 package com.example.journalapp
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.*
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.appcompat.app.AppCompatActivity
+import com.example.journalapp.databinding.StreakBinding
+import java.util.Calendar
 
-class StreakActivity : ComponentActivity() {
-    private lateinit var streak: Streak
+class StreakActivity : AppCompatActivity() {
+
+    private lateinit var binding: StreakBinding
+
+    // Variables to hold streak data
+    private var streakCount = 0
+    private var lastActiveDate: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Get the streak data passed from the intent
-        streak = intent.getSerializableExtra("STREAK_DATA") as? Streak ?: Streak(0, 0L)
 
-//        setContent {
-//            StreakPage(streak = streak) {
-//                // Handle navigation back to the main activity
-//                finish() // Close the StreakActivity and go back to the previous one
-//            }
+        // Inflate the layout using View Binding
+        binding = StreakBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Load streak data from Shared Preferences
+        loadStreakData()
+        updateStreakUI()  // Update the UI with loaded data
+
+        // Example of handling a button click
+        binding.viewDetailsButton.setOnClickListener {
+            // Handle button click (e.g., show details or navigate to another activity)
         }
     }
 
+    // Load streak data from Shared Preferences
+    private fun loadStreakData() {
+        val prefs = getSharedPreferences("JournalAppPrefs", MODE_PRIVATE)
+        streakCount = prefs.getInt("streak_count", 0)
+        lastActiveDate = prefs.getLong("last_active_date", 0)
+    }
+
+    // Update the UI with streak information
+    private fun updateStreakUI() {
+        binding.streakCountTextView.text = "Current Streak: $streakCount"
+        val lastDate = if (lastActiveDate == 0L) "Never" else Calendar.getInstance().apply { timeInMillis = lastActiveDate }.time.toString()
+        binding.lastActiveDateTextView.text = "Last Active: $lastDate"
+    }
+}

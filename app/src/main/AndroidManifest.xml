@@ -31,6 +31,8 @@
             android:label="@string/title_activity_note_detail"
             android:theme="@style/Theme.JournalApp.NoActionBar">
         </activity>
+        <!--streak activity declaration-->
+        <activity android:name=".StreakActivity" />
 
     </application>
 
