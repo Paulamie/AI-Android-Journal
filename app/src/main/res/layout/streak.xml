@@ -8,8 +8,8 @@
     android:padding="16dp">
 
     <LinearLayout
-        android:layout_width="241dp"
-        android:layout_height="202dp"
+        android:layout_width="306dp"
+        android:layout_height="351dp"
         android:background="@drawable/streak"
         android:backgroundTint="#308F7CB1"
         android:gravity="center"

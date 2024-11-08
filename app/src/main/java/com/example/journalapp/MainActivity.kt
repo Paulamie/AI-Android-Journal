@@ -1,5 +1,7 @@
 package com.example.journalapp
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -22,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.InputStream
 import android.widget.Button
+import android.widget.RemoteViews
 import android.widget.TextView
 import java.util.Calendar
 
@@ -353,6 +356,7 @@ class MainActivity : AppCompatActivity() {
     }
     // Update streak UI elements
     private fun updateStreakUI() {
+
         val prefs = getSharedPreferences("JournalAppPrefs", MODE_PRIVATE)
         val editor = prefs.edit()
         streakCount++
@@ -360,6 +364,22 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("streak_count", streakCount)
         editor.putLong("last_active_date", System.currentTimeMillis()) // Update last active date
         editor.apply()
+        updateWidget()
+    }
+
+    private fun updateWidget() {
+        val appWidgetManager = AppWidgetManager.getInstance(this)
+        val componentName = ComponentName(this, JournalAppWidgetProvider::class.java)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
+
+        if (appWidgetIds.isNotEmpty()) {
+            val views = RemoteViews(packageName, R.layout.widget)
+            views.setTextViewText(R.id.widget_streak_count, "Current Streak: $streakCount")
+
+            for (appWidgetId in appWidgetIds) {
+                appWidgetManager.updateAppWidget(appWidgetId, views)
+            }
+        }
     }
 
     companion object {

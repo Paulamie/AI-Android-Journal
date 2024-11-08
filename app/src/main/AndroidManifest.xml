@@ -35,6 +35,19 @@
         <!--streak activity declaration-->
         <activity android:name=".StreakActivity" />
 
+        <!--widget declaration-->
+        <receiver android:name=".JournalAppWidgetProvider"
+            android:exported="true"
+            android:label="Journal App Widget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>
