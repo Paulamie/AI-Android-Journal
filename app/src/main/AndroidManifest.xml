@@ -1,7 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<<<<<<< HEAD
     <uses-permission android:name="android.permission.INTERNET" />
 
 
+=======
+
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+>>>>>>> c86f773 (Reinitialize repository)
 
     <application
         android:allowBackup="true"
@@ -10,9 +18,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JournalApp.NoActionBar"
+<<<<<<< HEAD
         android:networkSecurityConfig="@xml/network_security_config">  <!-- Apply one theme here -->
 
         <!-- MainActivity declaration -->
+=======
+        android:networkSecurityConfig="@xml/network_security_config">
+
+        <!-- MainActivity -->
+>>>>>>> c86f773 (Reinitialize repository)
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,11 +38,16 @@
             </intent-filter>
         </activity>
 
+<<<<<<< HEAD
         <!-- NoteDetailActivity declaration -->
+=======
+        <!-- NoteDetailActivity -->
+>>>>>>> c86f773 (Reinitialize repository)
         <activity
             android:name=".NoteDetailActivity"
             android:exported="false"
             android:label="@string/title_activity_note_detail"
+<<<<<<< HEAD
             android:theme="@style/Theme.JournalApp.NoActionBar">
         </activity>
 
@@ -37,17 +56,37 @@
 
         <!--widget declaration-->
         <receiver android:name=".JournalAppWidgetProvider"
+=======
+            android:theme="@style/Theme.JournalApp.NoActionBar" />
+
+
+        <!-- StreakActivity -->
+        <activity android:name=".StreakActivity" />
+
+        <!-- Widget -->
+        <receiver
+            android:name=".JournalAppWidgetProvider"
+>>>>>>> c86f773 (Reinitialize repository)
             android:exported="true"
             android:label="Journal App Widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+<<<<<<< HEAD
 
+=======
+>>>>>>> c86f773 (Reinitialize repository)
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
 
     </application>
+<<<<<<< HEAD
 
 </manifest>
+=======
+</manifest>
+
+
+>>>>>>> c86f773 (Reinitialize repository)

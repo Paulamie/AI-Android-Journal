@@ -26,3 +26,7 @@
         android:layout_height="wrap_content"
         android:text="@string/save" />
 </LinearLayout>
+<<<<<<< HEAD
+=======
+
+>>>>>>> c86f773 (Reinitialize repository)

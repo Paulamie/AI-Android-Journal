@@ -4,7 +4,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+<<<<<<< HEAD
         classpath ("com.android.tools.build:gradle:8.7.1")
+=======
+        classpath ("com.android.tools.build:gradle:8.7.2")
+>>>>>>> c86f773 (Reinitialize repository)
         classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20")
     }
 }

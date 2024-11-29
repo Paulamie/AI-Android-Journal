@@ -21,3 +21,7 @@
         android:id="@+id/action_logout"
         android:title="Logout" />
 </menu>
+<<<<<<< HEAD
+=======
+
+>>>>>>> c86f773 (Reinitialize repository)

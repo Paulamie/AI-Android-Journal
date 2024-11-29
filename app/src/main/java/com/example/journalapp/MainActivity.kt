@@ -10,6 +10,10 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+<<<<<<< HEAD
+=======
+import android.widget.RemoteViews
+>>>>>>> c86f773 (Reinitialize repository)
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -23,10 +27,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.InputStream
+<<<<<<< HEAD
 import android.widget.Button
 import android.widget.RemoteViews
 import android.widget.TextView
 import java.util.Calendar
+=======
+import java.util.Calendar
+import com.google.gson.reflect.TypeToken
+
+>>>>>>> c86f773 (Reinitialize repository)
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,7 +52,11 @@ class MainActivity : AppCompatActivity() {
 
     // Retrofit instance for API service
     private val retrofit = Retrofit.Builder()
+<<<<<<< HEAD
         .baseUrl("http://10.0.2.2:5000/") // Replace with your actual server URL
+=======
+        .baseUrl("http://10.0.2.2:5001/") // Replace with your actual server URL
+>>>>>>> c86f773 (Reinitialize repository)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -53,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+<<<<<<< HEAD
         // Set refreshButton initially to GONE
         binding.refreshButton.visibility = View.GONE
         Log.d("MainActivity", "Refresh button initially set to GONE")
@@ -62,6 +77,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         // Set up RecyclerView and Adapter
+=======
+        setSupportActionBar(binding.toolbar)
+
+        // RecyclerView setup
+>>>>>>> c86f773 (Reinitialize repository)
         notesAdapter = NotesAdapter(notesList, { position ->
             if (isInSelectionMode) {
                 toggleSelection(position)
@@ -77,19 +97,31 @@ class MainActivity : AppCompatActivity() {
         binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.notesRecyclerView.adapter = notesAdapter
 
+<<<<<<< HEAD
         reloadNotes()
 
         updateStreakUI() //streak page update
+=======
+        // Load notes and streak data
+        reloadNotes()
+        loadStreakData()
+        updateStreakUI()
+>>>>>>> c86f773 (Reinitialize repository)
 
         // Floating action button for adding a new note
         binding.plusButton.setOnClickListener {
             if (!isInSelectionMode) {
                 val intent = Intent(this, NoteDetailActivity::class.java)
+<<<<<<< HEAD
                 intent.putExtra("NOTE_ID", -1) // -1 means creating a new note
+=======
+                intent.putExtra("NOTE_ID", -1) // -1 indicates creating a new note
+>>>>>>> c86f773 (Reinitialize repository)
                 startActivityForResult(intent, REQUEST_CODE_NOTE)
             }
         }
 
+<<<<<<< HEAD
         // Delete button for deleting selected notes
         binding.deleteButton.setOnClickListener {
             deleteSelectedNotes()
@@ -114,10 +146,28 @@ class MainActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_main, menu)
 
+=======
+        // Delete button
+        binding.deleteButton.setOnClickListener { deleteSelectedNotes() }
+
+        // Dropdown menu button
+        binding.menuButton.setOnClickListener { showDropdownMenu(it) }
+
+        // Fetch advice from the server
+        binding.apiButton.setOnClickListener { getAdviceForNotes() }
+
+        // Refresh advice button
+        binding.refreshButton.setOnClickListener { getAdviceForNotes() }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+>>>>>>> c86f773 (Reinitialize repository)
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
         searchView.queryHint = "Search notes..."
 
+<<<<<<< HEAD
         // Set up lambda-based expand/collapse actions for the search view
         searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem): Boolean {
@@ -135,6 +185,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+=======
+>>>>>>> c86f773 (Reinitialize repository)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 searchNotes(query)
@@ -150,6 +202,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+<<<<<<< HEAD
 
 
     private fun showDropdownMenu(view: View) {
@@ -166,6 +219,18 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
+=======
+    private fun showDropdownMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        popupMenu.menuInflater.inflate(R.menu.menu_main, popupMenu.menu)
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_streak -> {
+                    startActivity(Intent(this, StreakActivity::class.java))
+                    true
+                }
+>>>>>>> c86f773 (Reinitialize repository)
                 R.id.action_settings -> {
                     Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show()
                     true
@@ -184,17 +249,42 @@ class MainActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
+<<<<<<< HEAD
     private fun reloadNotes() {
         val json = loadNotesFromPrivateStorage() ?: loadNotesFromAssets()
         if (json != null) {
             notesList = Gson().fromJson(json, NotesResponse::class.java).notes.toMutableList()
             notesAdapter.updateNotes(notesList)
             Log.d("MainActivity", "Notes loaded: ${notesList.size}")
+=======
+
+    private fun reloadNotes() {
+        val json = loadNotesFromPrivateStorage() ?: loadNotesFromAssets()
+        if (json != null) {
+            try {
+                // Check if the JSON starts with '[' (array) or '{' (object)
+                notesList = if (json.trim().startsWith("[")) {
+                    // Parse as JSON array
+                    val type = object : TypeToken<MutableList<Note>>() {}.type
+                    Gson().fromJson(json, type)
+                } else {
+                    // Parse as JSON object (legacy format with NotesResponse)
+                    val notesResponse = Gson().fromJson(json, NotesResponse::class.java)
+                    notesResponse.notes.toMutableList()
+                }
+                notesAdapter.updateNotes(notesList)
+                Log.d("MainActivity", "Notes loaded: ${notesList.size}")
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Error parsing notes JSON: ${e.message}")
+                Toast.makeText(this, "Error loading notes", Toast.LENGTH_SHORT).show()
+            }
+>>>>>>> c86f773 (Reinitialize repository)
         } else {
             Toast.makeText(this, "Failed to load notes data", Toast.LENGTH_SHORT).show()
         }
     }
 
+<<<<<<< HEAD
     private fun searchNotes(query: String?) {
         Log.d("MainActivity", "Search query: $query")
         val filteredNotes = if (!query.isNullOrEmpty()) {
@@ -246,11 +336,44 @@ class MainActivity : AppCompatActivity() {
         binding.deleteButton.visibility = View.GONE
 
         saveNotesToFile(adapter.notes)
+=======
+
+
+    private fun searchNotes(query: String?) {
+        val filteredNotes = notesList.filter {
+            it.title.contains(query ?: "", true) || it.content.contains(query ?: "", true)
+        }
+        notesAdapter.updateNotes(filteredNotes)
+    }
+
+    private fun toggleSelection(position: Int) {
+        val note = notesAdapter.notes[position]
+        note.isSelected = !note.isSelected
+
+        if (note.isSelected) selectedNotes.add(note) else selectedNotes.remove(note)
+
+        notesAdapter.notifyItemChanged(position)
+
+        binding.deleteButton.visibility = if (selectedNotes.isEmpty()) View.GONE else View.VISIBLE
+        isInSelectionMode = selectedNotes.isNotEmpty()
+    }
+
+    private fun deleteSelectedNotes() {
+        notesAdapter.notes.removeAll(selectedNotes)
+        notesAdapter.notifyDataSetChanged()
+        saveNotesToFile(notesAdapter.notes)
+        selectedNotes.clear()
+        isInSelectionMode = false
+        binding.deleteButton.visibility = View.GONE
+>>>>>>> c86f773 (Reinitialize repository)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+<<<<<<< HEAD
 
+=======
+>>>>>>> c86f773 (Reinitialize repository)
         if (requestCode == REQUEST_CODE_NOTE && resultCode == RESULT_OK) {
             reloadNotes()
         }
@@ -264,6 +387,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadNotesFromAssets(): String? {
         return try {
             val inputStream: InputStream = assets.open("notes.json")
+<<<<<<< HEAD
             val size = inputStream.available()
             val buffer = ByteArray(size)
             inputStream.read(buffer)
@@ -271,24 +395,37 @@ class MainActivity : AppCompatActivity() {
             String(buffer, Charsets.UTF_8)
         } catch (e: Exception) {
             e.printStackTrace()
+=======
+            inputStream.bufferedReader().use { it.readText() }
+        } catch (e: Exception) {
+>>>>>>> c86f773 (Reinitialize repository)
             null
         }
     }
 
     private fun saveNotesToFile(notes: List<Note>) {
+<<<<<<< HEAD
         val notesResponse = NotesResponse(notes)
         val json = Gson().toJson(notesResponse)
+=======
+        val json = Gson().toJson(notes) // Save as JSON array
+>>>>>>> c86f773 (Reinitialize repository)
         val file = File(filesDir, "notes.json")
         try {
             file.writeText(json)
             Toast.makeText(this, "Notes saved", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
+<<<<<<< HEAD
+=======
+            Log.e("MainActivity", "Error saving notes: ${e.message}")
+>>>>>>> c86f773 (Reinitialize repository)
             Toast.makeText(this, "Error saving notes", Toast.LENGTH_SHORT).show()
         }
     }
 
 
     private fun getAdviceForNotes() {
+<<<<<<< HEAD
         val notes = (binding.notesRecyclerView.adapter as? NotesAdapter)?.notes ?: return
         val request = AdviceRequest(notes)
 
@@ -304,6 +441,15 @@ class MainActivity : AppCompatActivity() {
                     Log.d("MainActivity", "Visibility changed: apiButton=GONE, refreshButton=VISIBLE")
                 } else {
                     Toast.makeText(this@MainActivity, "Failed to get advice", Toast.LENGTH_SHORT).show()
+=======
+        val notes = notesAdapter.notes
+        apiService.getAdvice(AdviceRequest(notes)).enqueue(object : Callback<AdviceResponse> {
+            override fun onResponse(call: Call<AdviceResponse>, response: Response<AdviceResponse>) {
+                if (response.isSuccessful) {
+                    displayAdviceInRecyclerView(response.body()?.advice)
+                    binding.apiButton.visibility = View.GONE
+                    binding.refreshButton.visibility = View.VISIBLE
+>>>>>>> c86f773 (Reinitialize repository)
                 }
             }
 
@@ -313,14 +459,18 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> c86f773 (Reinitialize repository)
     private fun displayAdviceInRecyclerView(advice: String?) {
         val adviceList = listOf(advice ?: "No advice available")
         binding.AIbot.layoutManager = LinearLayoutManager(this)
         binding.AIbot.adapter = AdviceAdapter(adviceList)
     }
 
+<<<<<<< HEAD
     // Update the streak count based on activity
     private fun updateStreak() {
         val currentDate = Calendar.getInstance().timeInMillis
@@ -364,6 +514,22 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("streak_count", streakCount)
         editor.putLong("last_active_date", System.currentTimeMillis()) // Update last active date
         editor.apply()
+=======
+    private fun loadStreakData() {
+        val prefs = getSharedPreferences("JournalAppPrefs", MODE_PRIVATE)
+        streakCount = prefs.getInt("streak_count", 0)
+        lastActiveDate = prefs.getLong("last_active_date", 0)
+    }
+
+    private fun updateStreakUI() {
+        loadStreakData()
+        streakCount++
+        val prefs = getSharedPreferences("JournalAppPrefs", MODE_PRIVATE)
+        prefs.edit()
+            .putInt("streak_count", streakCount)
+            .putLong("last_active_date", System.currentTimeMillis())
+            .apply()
+>>>>>>> c86f773 (Reinitialize repository)
         updateWidget()
     }
 
@@ -376,16 +542,24 @@ class MainActivity : AppCompatActivity() {
             val views = RemoteViews(packageName, R.layout.widget)
             views.setTextViewText(R.id.widget_streak_count, "Current Streak: $streakCount")
 
+<<<<<<< HEAD
             for (appWidgetId in appWidgetIds) {
                 appWidgetManager.updateAppWidget(appWidgetId, views)
             }
+=======
+            appWidgetIds.forEach { appWidgetManager.updateAppWidget(it, views) }
+>>>>>>> c86f773 (Reinitialize repository)
         }
     }
 
     companion object {
         private const val REQUEST_CODE_NOTE = 1
     }
+<<<<<<< HEAD
 }
 
 
 
+=======
+}
+>>>>>>> c86f773 (Reinitialize repository)
