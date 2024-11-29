@@ -1,9 +1,5 @@
 package com.example.journalapp
 
 data class NotesResponse(
-    val notes: List<Note>
-<<<<<<< HEAD
+    val notes: List<Note> // List of Note objects
 )
-=======
-)
->>>>>>> c86f773 (Reinitialize repository)

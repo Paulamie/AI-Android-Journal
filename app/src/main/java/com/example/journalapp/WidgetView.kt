@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> c86f773 (Reinitialize repository)
 package com.example.journalapp
 
 import android.app.PendingIntent
@@ -14,42 +10,30 @@ import android.widget.RemoteViews
 class JournalAppWidgetProvider : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds)
-
-        // Iterate through all widgets
+        // Iterate through all widget instances
         for (appWidgetId in appWidgetIds) {
-            // Get the widget layout and set up the views
+            // Inflate the widget layout
             val views = RemoteViews(context.packageName, R.layout.widget)
 
-<<<<<<< HEAD
-            // Get streak count from shared preferences (assuming it's saved there)
-=======
-            // Retrieve the streak count from shared preferences
->>>>>>> c86f773 (Reinitialize repository)
+            // Retrieve streak count from SharedPreferences
             val prefs = context.getSharedPreferences("JournalAppPrefs", Context.MODE_PRIVATE)
             val streakCount = prefs.getInt("streak_count", 0)
             views.setTextViewText(R.id.widget_streak_count, "Current Streak: $streakCount")
 
-            // Set up the button to open the MainActivity
+            // Set up an Intent to open the MainActivity when the button is clicked
             val intent = Intent(context, MainActivity::class.java)
-<<<<<<< HEAD
-            val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-=======
             val pendingIntent = PendingIntent.getActivity(
                 context,
                 0,
                 intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
->>>>>>> c86f773 (Reinitialize repository)
             views.setOnClickPendingIntent(R.id.widget_open_app_button, pendingIntent)
 
-            // Update the widget
+            // Update the widget with the new data
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
-<<<<<<< HEAD
-=======
 
     override fun onEnabled(context: Context) {
         // Called when the first widget is created
@@ -60,5 +44,4 @@ class JournalAppWidgetProvider : AppWidgetProvider() {
         // Called when the last widget is removed
         super.onDisabled(context)
     }
->>>>>>> c86f773 (Reinitialize repository)
 }

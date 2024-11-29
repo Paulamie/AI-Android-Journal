@@ -4,42 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<<<<<<< HEAD
-
-=======
->>>>>>> c86f773 (Reinitialize repository)
     <!-- Toolbar at the top -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-<<<<<<< HEAD
-        app:title="Journal App"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-    <!-- Menu Icon at the top right -->
-=======
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:title="@string/app_name"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <!-- Menu Button (top-right corner) -->
->>>>>>> c86f773 (Reinitialize repository)
     <ImageButton
         android:id="@+id/menuButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-<<<<<<< HEAD
-        android:padding="8dp"
-        android:src="@drawable/hamburger_icon"
-        android:background="?android:attr/selectableItemBackground"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:contentDescription="@string/menu_button" />
-
-    <!-- Add API Button for advice retrieval -->
-=======
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
@@ -50,21 +29,10 @@
         android:contentDescription="@string/menu_button" />
 
     <!-- Get Advice Button -->
->>>>>>> c86f773 (Reinitialize repository)
     <Button
         android:id="@+id/apiButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
-        android:text="@string/get_advice"
-        android:contentDescription="@string/delete_selected"
-        android:layout_below="@id/toolbar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        style="@style/Widget.AppCompat.Button.Colored" />
-
-    <!-- Refresh Button, initially hidden -->
-=======
         android:layout_below="@id/toolbar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
@@ -74,36 +42,15 @@
         style="@style/Widget.AppCompat.Button.Colored" />
 
     <!-- Refresh Button (initially hidden) -->
->>>>>>> c86f773 (Reinitialize repository)
     <ImageButton
         android:id="@+id/refreshButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-<<<<<<< HEAD
-        android:src="@drawable/ic_refresh"
-        android:contentDescription="@string/refresh"
-        android:layout_below="@id/apiButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:elevation="8dp"
-        android:visibility="gone" />
-
-    <!-- RecyclerView for displaying advice -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/AIbot"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_below="@id/refreshButton"
-        android:layout_marginTop="20dp" />
-
-
-    <!-- RecyclerView for displaying notes -->
-=======
         android:layout_below="@id/apiButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp"
         android:src="@drawable/ic_refresh"
-        android:contentDescription="@string/refresh_button"
+        android:contentDescription="@string/refresh"
         android:visibility="gone"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:elevation="8dp" />
@@ -120,48 +67,21 @@
         android:clipToPadding="false" />
 
     <!-- Notes RecyclerView -->
->>>>>>> c86f773 (Reinitialize repository)
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_below="@id/AIbot"
         android:layout_above="@id/plusButton"
-<<<<<<< HEAD
-        android:layout_marginTop="8dp" />
-
-    <!-- Plus Button at the bottom center -->
-=======
         android:layout_marginTop="8dp"
         android:padding="8dp"
         android:clipToPadding="false" />
 
     <!-- Plus Button (centered at the bottom) -->
->>>>>>> c86f773 (Reinitialize repository)
     <ImageButton
         android:id="@+id/plusButton"
         android:layout_width="70dp"
         android:layout_height="70dp"
-<<<<<<< HEAD
-        android:background="@drawable/circular_button"
-        android:src="@drawable/ic_plus_blue"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:contentDescription="Plus Button" />
-
-    <!-- Trash icon for deleting selected notes -->
-    <ImageButton
-        android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_trash"
-        android:layout_above="@id/plusButton"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:contentDescription="Delete Selected" />
-
-</RelativeLayout>
-=======
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
@@ -183,6 +103,3 @@
         android:contentDescription="@string/delete_selected" />
 
 </RelativeLayout>
-
-
->>>>>>> c86f773 (Reinitialize repository)

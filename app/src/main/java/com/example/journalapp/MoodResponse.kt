@@ -1,9 +1,5 @@
 package com.example.journalapp
 
 data class MoodResponse(
-    val mood: String // This represents the emoji received from the mood API
-<<<<<<< HEAD
+    val mood: String // Represents the emoji received from the mood API
 )
-=======
-)
->>>>>>> c86f773 (Reinitialize repository)

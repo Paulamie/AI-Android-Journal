@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginEnd="8dp" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -38,17 +38,13 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
+
         <TextView
             android:id="@+id/noteEmoji"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_marginEnd="8dp"
             android:textSize="24sp" />
     </LinearLayout>
 
 </LinearLayout>
-<<<<<<< HEAD
-=======
-
->>>>>>> c86f773 (Reinitialize repository)

@@ -2,8 +2,4 @@
     <solid android:color="@android:color/white"/>
     <corners android:radius="12dp"/>
     <stroke android:width="2dp" android:color="@color/colorAccent"/>
-<<<<<<< HEAD
 </shape>
-=======
-</shape>
->>>>>>> c86f773 (Reinitialize repository)

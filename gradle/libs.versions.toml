@@ -1,9 +1,5 @@
 [versions]
-<<<<<<< HEAD
 agp = "8.7.1"
-=======
-agp = "8.7.2"
->>>>>>> c86f773 (Reinitialize repository)
 kotlin = "1.9.20"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -29,4 +25,3 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-

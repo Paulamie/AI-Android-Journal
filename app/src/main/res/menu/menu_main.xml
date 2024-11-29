@@ -7,21 +7,20 @@
         android:title="Search"
         app:showAsAction="always|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
     <item
         android:id="@+id/action_streak"
-        android:title="Streak"/>.
+        android:title="Streak" />
 
     <item
         android:id="@+id/action_settings"
         android:title="Settings" />
+
     <item
         android:id="@+id/action_help"
         android:title="Help" />
+
     <item
         android:id="@+id/action_logout"
         android:title="Logout" />
 </menu>
-<<<<<<< HEAD
-=======
-
->>>>>>> c86f773 (Reinitialize repository)

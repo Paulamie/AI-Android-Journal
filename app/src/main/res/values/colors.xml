@@ -6,14 +6,6 @@
     <color name="purple_500">#6200EE</color>
     <color name="purple_700">#3700B3</color>
     <color name="colorSelected">#D3D3D3</color>
-<<<<<<< HEAD
-</resources>
-=======
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-
-
 </resources>
-
-
->>>>>>> c86f773 (Reinitialize repository)

@@ -1,32 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
-<!-- res/layout/widget_layout.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#5711D9"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:textColor="@android:color/white">
-
-    <TextView
-        android:id="@+id/widget_streak_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Current Streak: 0"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/colorSelected"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/widget_open_app_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#2C008E"
-        android:text="Open Journal App"
-        android:textColor="@color/colorSelected" />
-</LinearLayout>
-=======
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -35,25 +7,23 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-<TextView
-    android:id="@+id/widget_streak_count"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Current Streak: 0"
-    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-    android:textColor="@android:color/white"
-    android:textSize="20sp"
-    android:contentDescription="Displays the current streak count" />
+    <TextView
+        android:id="@+id/widget_streak_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Current Streak: 0"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:contentDescription="Displays the current streak count" />
 
-<Button
-    android:id="@+id/widget_open_app_button"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:backgroundTint="@color/purple_500"
-    android:text="Open Journal App"
-    android:textColor="@android:color/white"
-    android:contentDescription="Button to open the Journal App" />
-    </LinearLayout>
-
->>>>>>> c86f773 (Reinitialize repository)
+    <Button
+        android:id="@+id/widget_open_app_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/purple_500"
+        android:text="Open Journal App"
+        android:textColor="@android:color/white"
+        android:contentDescription="Button to open the Journal App" />
+</LinearLayout>

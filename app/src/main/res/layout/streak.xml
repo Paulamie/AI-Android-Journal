@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-=======
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
->>>>>>> c86f773 (Reinitialize repository)
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorSelected"
@@ -12,7 +8,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-<<<<<<< HEAD
     <LinearLayout
         android:layout_width="306dp"
         android:layout_height="351dp"
@@ -26,9 +21,6 @@
             android:id="@+id/streakCountTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#F4F4F5"
-            android:backgroundTint="#00D3D3D3"
-            android:drawableTint="@color/colorPrimaryDark"
             android:gravity="center"
             android:text="0"
             android:textColor="@color/purple_700"
@@ -39,12 +31,10 @@
             android:id="@+id/lastActiveDateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
             android:layout_marginTop="8dp"
             android:gravity="end"
             android:text="Last Active: Never"
-            android:textColor="#4D2A0162"
-            android:textColorLink="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="14sp" />
     </LinearLayout>
 
@@ -55,47 +45,5 @@
         android:layout_marginTop="24dp"
         android:text="View Details"
         android:textColor="@android:color/white"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 </LinearLayout>
-=======
-<LinearLayout
-    android:layout_width="306dp"
-    android:layout_height="351dp"
-    android:background="@drawable/streak"
-    android:backgroundTint="#308F7CB1"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="24dp">
-
-<TextView
-    android:id="@+id/streakCountTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:text="0"
-    android:textColor="@color/purple_700"
-    android:textSize="48sp"
-    android:textStyle="bold" />
-
-<TextView
-    android:id="@+id/lastActiveDateTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:gravity="end"
-    android:text="Last Active: Never"
-    android:textColor="@color/colorPrimaryDark"
-    android:textSize="14sp" />
-    </LinearLayout>
-
-<Button
-    android:id="@+id/viewDetailsButton"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="24dp"
-    android:text="View Details"
-    android:textColor="@android:color/white"
-    android:visibility="gone" />
-    </LinearLayout>
-
->>>>>>> c86f773 (Reinitialize repository)
