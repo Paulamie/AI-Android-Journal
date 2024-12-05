@@ -21,6 +21,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
+import android.widget.RemoteViews
 import java.io.InputStream
 import java.util.Calendar
 
@@ -267,7 +268,7 @@ class MainActivity : AppCompatActivity() {
         val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
 
         if (appWidgetIds.isNotEmpty()) {
-            val views = RemoteViews(packageName, R.layout.widget_layout)
+            val views = RemoteViews(packageName, R.layout.widget)
             views.setTextViewText(R.id.widget_streak_count, "Current Streak: $streakCount")
             appWidgetIds.forEach { appWidgetManager.updateAppWidget(it, views) }
         }
