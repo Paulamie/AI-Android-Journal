@@ -154,15 +154,25 @@ class MainActivity : AppCompatActivity() {
         val json = loadNotesFromPrivateStorage() ?: loadNotesFromAssets()
         if (json != null) {
             try {
-                notesList = Gson().fromJson(json, NotesResponse::class.java).notes.toMutableList()
+                Log.d("ReloadNotes", "Loaded JSON: $json")
+
+                // Parse the JSON as a list of notes directly
+                notesList = Gson().fromJson(json, Array<Note>::class.java).toMutableList()
+
+                // Update the adapter with the parsed notes
                 notesAdapter.updateNotes(notesList)
+                Log.d("ReloadNotes", "Loaded ${notesList.size} notes")
             } catch (e: Exception) {
+                Log.e("ReloadNotes", "Error parsing JSON: ${e.message}")
                 Toast.makeText(this, "Error loading notes", Toast.LENGTH_SHORT).show()
             }
         } else {
+            Log.e("ReloadNotes", "Failed to load JSON from storage or assets")
             Toast.makeText(this, "Failed to load notes data", Toast.LENGTH_SHORT).show()
         }
     }
+
+
 
     private fun searchNotes(query: String?) {
         val filteredNotes = notesList.filter {
@@ -201,8 +211,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadNotesFromPrivateStorage(): String? {
         val file = File(filesDir, "notes.json")
-        return if (file.exists()) file.readText() else null
+        return if (file.exists()) {
+            try {
+                file.readText()
+            } catch (e: Exception) {
+                Log.e("LoadNotes", "Error reading file: ${e.message}")
+                null
+            }
+        } else null
     }
+
 
     private fun loadNotesFromAssets(): String? {
         return try {

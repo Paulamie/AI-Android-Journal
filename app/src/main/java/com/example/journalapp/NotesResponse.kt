@@ -1,5 +1,6 @@
 package com.example.journalapp
 
 data class NotesResponse(
-    val notes: List<Note> // List of Note objects
+    val notes: List<Note>
 )
+

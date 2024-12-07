@@ -15,6 +15,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.File
 import java.io.InputStream
+import android.util.Log
+
 
 data class QuestionsWrapper(val questions: List<String>)
 
@@ -74,19 +76,28 @@ class NoteDetailActivity : AppCompatActivity() {
     }
 
     private fun displayFilePreview(uri: Uri, fileType: String) {
+        binding.etNoteContent.visibility = View.VISIBLE
+        binding.etNoteContent.isEnabled = true
+        binding.etNoteContent.isFocusableInTouchMode = true
+
+        // Reset visibility for views
         binding.fileImageView.visibility = View.GONE
         binding.selectedFileName.visibility = View.VISIBLE
 
         if (fileType.startsWith("image/")) {
+            // Display image
             binding.fileImageView.visibility = View.VISIBLE
             binding.fileImageView.setImageURI(uri)
         } else if (fileType == "application/pdf") {
+            // Render PDF preview
             renderPdfPreview(uri)
         }
 
+        // Show file name
         val documentFile = DocumentFile.fromSingleUri(this, uri)
         binding.selectedFileName.text = documentFile?.name ?: getString(R.string.file_selected)
     }
+
 
     private fun renderPdfPreview(uri: Uri) {
         try {
@@ -115,16 +126,19 @@ class NoteDetailActivity : AppCompatActivity() {
             note.fileUri?.let {
                 selectedFileUri = Uri.parse(it)
                 val fileType = contentResolver.getType(selectedFileUri!!)
+                Log.d("NoteDetailActivity", "File URI: $it")
+                Log.d("NoteDetailActivity", "File Type: $fileType")
 
                 if (fileType != null) {
                     displayFilePreview(selectedFileUri!!, fileType)
                 } else {
+                    Log.e("NoteDetailActivity", "Unsupported file type for URI: $it")
                     binding.fileImageView.visibility = View.GONE
                     binding.selectedFileName.visibility = View.VISIBLE
-                    val documentFile = DocumentFile.fromSingleUri(this, selectedFileUri!!)
-                    binding.selectedFileName.text = documentFile?.name ?: getString(R.string.file_selected)
+                    binding.selectedFileName.text = getString(R.string.file_selected)
                 }
             } ?: run {
+                Log.w("NoteDetailActivity", "No file URI found for note.")
                 binding.fileImageView.visibility = View.GONE
                 binding.selectedFileName.visibility = View.GONE
             }
@@ -134,26 +148,27 @@ class NoteDetailActivity : AppCompatActivity() {
     private fun addNote() {
         val newTitle = binding.etNoteTitle.text.toString()
         val newContent = binding.etNoteContent.text.toString()
-        val noteFileUri = selectedFileUri?.toString()
+        val noteFileUri = selectedFileUri?.toString() // Save the file URI
 
-        notes.add(Note(newTitle, newContent, noteFileUri))
-        saveNotesToFile()
+        notes.add(Note(newTitle, newContent, noteFileUri)) // Add new note to the list
+        saveNotesToFile() // Save all notes to a JSON file
         setResult(RESULT_OK)
         finish()
     }
 
+
     private fun updateNote() {
         val updatedTitle = binding.etNoteTitle.text.toString()
         val updatedContent = binding.etNoteContent.text.toString()
-        val noteFileUri = selectedFileUri?.toString()
+        val noteFileUri = selectedFileUri?.toString() // Save the updated file URI
 
         if (currentIndex in notes.indices) {
             notes[currentIndex] = notes[currentIndex].copy(
                 title = updatedTitle,
                 content = updatedContent,
-                fileUri = noteFileUri
+                fileUri = noteFileUri // Update the file URI
             )
-            saveNotesToFile()
+            saveNotesToFile() // Save all notes to a JSON file
             setResult(RESULT_OK)
             finish()
         } else {
@@ -161,11 +176,14 @@ class NoteDetailActivity : AppCompatActivity() {
         }
     }
 
+
     private fun saveNotesToFile() {
         val json = Gson().toJson(notes)
         val file = File(filesDir, "notes.json")
         file.writeText(json)
+        Log.d("SaveNotes", "Notes saved to: ${file.absolutePath}")
     }
+
 
     private fun loadNotes() {
         val file = File(filesDir, "notes.json")
@@ -175,6 +193,7 @@ class NoteDetailActivity : AppCompatActivity() {
             notes = Gson().fromJson(json, type)
         }
     }
+
 
     private fun loadQuestions() {
         try {
