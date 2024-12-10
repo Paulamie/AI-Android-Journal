@@ -238,14 +238,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateStreakUI() {
-        loadStreakData()
-        streakCount++
-        val prefs = getSharedPreferences("JournalAppPrefs", MODE_PRIVATE)
-        prefs.edit()
-            .putInt("streak_count", streakCount)
-            .putLong("last_active_date", System.currentTimeMillis())
-            .apply()
-        updateWidget()
+        val currentDate = Calendar.getInstance().apply {
+            // Set the time to midnight to only compare dates
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+
+        // Check if the current date is different from the last active date
+        if (currentDate > lastActiveDate) {
+            streakCount++ // Increment streak only if a new day has passed
+
+            // Update the last active date to today's date
+            val prefs = getSharedPreferences("JournalAppPrefs", MODE_PRIVATE)
+            prefs.edit()
+                .putInt("streak_count", streakCount)
+                .putLong("last_active_date", currentDate)
+                .apply()
+
+            updateWidget() // Update the widget with the new streak count
+        }
     }
 
     private fun updateWidget() {
