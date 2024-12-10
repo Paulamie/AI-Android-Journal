@@ -117,6 +117,7 @@ class NoteDetailActivity : AppCompatActivity() {
         }
     }
 
+
     private fun loadNoteForEditing(noteId: Int) {
         if (noteId in notes.indices) {
             val note = notes[noteId]

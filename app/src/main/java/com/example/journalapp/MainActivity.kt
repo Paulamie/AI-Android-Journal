@@ -188,6 +188,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+
     private fun loadNotesFromAssets(): String? {
         return try {
             assets.open("notes.json").bufferedReader().use { it.readText() }
