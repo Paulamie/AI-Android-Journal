@@ -123,10 +123,8 @@ class MainActivity : AppCompatActivity() {
         if (json != null) {
             try {
                 Log.d("ReloadNotes", "Loaded JSON: $json")
-
                 // Parse the JSON as a list of notes directly
                 notesList = Gson().fromJson(json, Array<Note>::class.java).toMutableList()
-
                 // Update the adapter with the parsed notes
                 notesAdapter.updateNotes(notesList)
                 Log.d("ReloadNotes", "Loaded ${notesList.size} notes")
