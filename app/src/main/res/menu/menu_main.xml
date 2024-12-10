@@ -2,25 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="Search"
-        app:showAsAction="always|collapseActionView"
-        app:actionViewClass="androidx.appcompat.widget.SearchView" />
-
-    <item
         android:id="@+id/action_streak"
-        android:title="Streak" />
-
-    <item
-        android:id="@+id/action_settings"
-        android:title="Settings" />
-
-    <item
-        android:id="@+id/action_help"
-        android:title="Help" />
-
-    <item
-        android:id="@+id/action_logout"
-        android:title="Logout" />
+        android:icon="@drawable/streak_icon"
+        android:title="Streak"
+        app:showAsAction="always" />
 </menu>

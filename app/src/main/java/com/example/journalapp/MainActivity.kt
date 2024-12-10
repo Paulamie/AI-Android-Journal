@@ -87,9 +87,9 @@ class MainActivity : AppCompatActivity() {
             deleteSelectedNotes()
         }
 
-        // Show dropdown menu when menuButton is clicked
-        binding.menuButton.setOnClickListener { view ->
-            showDropdownMenu(view)
+        binding.streakIcon.setOnClickListener {
+            val intent = Intent(this, StreakActivity::class.java)
+            startActivity(intent)
         }
 
         // Button to get advice based on notes
@@ -104,50 +104,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        val searchItem = menu.findItem(R.id.action_search)
-        val searchView = searchItem.actionView as SearchView
-        searchView.queryHint = "Search notes..."
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                searchNotes(query)
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                searchNotes(newText)
-                return true
-            }
-        })
         return true
     }
 
-    private fun showDropdownMenu(view: View) {
-        val popupMenu = PopupMenu(this, view)
-        popupMenu.menuInflater.inflate(R.menu.menu_main, popupMenu.menu)
-
-        popupMenu.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.action_streak -> {
-                    startActivity(Intent(this, StreakActivity::class.java))
-                    true
-                }
-                R.id.action_settings -> {
-                    Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                R.id.action_help -> {
-                    Toast.makeText(this, "Help selected", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                R.id.action_logout -> {
-                    Toast.makeText(this, "Logout selected", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                else -> false
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_streak -> {
+                // Launch the StreakActivity
+                startActivity(Intent(this, StreakActivity::class.java))
+                return true
             }
         }
-        popupMenu.show()
+        return super.onOptionsItemSelected(item)
     }
 
     private fun reloadNotes() {

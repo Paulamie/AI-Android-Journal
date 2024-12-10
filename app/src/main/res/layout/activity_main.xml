@@ -5,30 +5,31 @@
     android:layout_height="match_parent">
 
     <!-- Toolbar at the top -->
+
+    <!-- streak icon -->
+
+    <!-- Get Advice Button -->
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:title="@string/app_name"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="@string/app_name" />
 
-    <!-- Menu Button (top-right corner) -->
-    <ImageButton
-        android:id="@+id/menuButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:padding="8dp"
-        android:src="@drawable/hamburger_icon"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/menu_button" />
+    <Button
+        android:id="@+id/streakIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/toolbar"
+        android:layout_centerHorizontal="false"
+        android:background="#00FFFFFF"
+        android:backgroundTint="#00FFFFFF"
+        android:contentDescription="@string/streak_icon_description"
+        android:src="@drawable/streak_icon" />
 
-    <!-- Get Advice Button -->
     <Button
         android:id="@+id/apiButton"
         android:layout_width="wrap_content"
