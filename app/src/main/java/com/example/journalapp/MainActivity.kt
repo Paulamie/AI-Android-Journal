@@ -122,12 +122,14 @@ class MainActivity : AppCompatActivity() {
         val json = loadNotesFromPrivateStorage() ?: loadNotesFromAssets()
         if (json != null) {
             try {
-                Log.d("ReloadNotes", "Loaded JSON: $json")
-                // Parse the JSON as a list of notes directly
-                notesList = Gson().fromJson(json, Array<Note>::class.java).toMutableList()
+                // Parse JSON as a NotesResponse object, then extract the notes list
+                val response = Gson().fromJson(json, NotesResponse::class.java)
+                notesList = response.notes.toMutableList()  // Update the notes list
+
                 // Update the adapter with the parsed notes
                 notesAdapter.updateNotes(notesList)
                 Log.d("ReloadNotes", "Loaded ${notesList.size} notes")
+
             } catch (e: Exception) {
                 Log.e("ReloadNotes", "Error parsing JSON: ${e.message}")
                 Toast.makeText(this, "Error loading notes", Toast.LENGTH_SHORT).show()
