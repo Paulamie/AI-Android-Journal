@@ -35,7 +35,10 @@ class NotesAdapter(
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = notes[position]
         holder.title.text = note.title
-        holder.content.text = note.content
+
+        // Show only the first line of content
+        val firstLine = note.content.lines().firstOrNull() ?: ""
+        holder.content.text = firstLine
 
         // Only fetch mood emoji if it's not already set
         if (holder.emoji.text.isEmpty() || holder.emoji.text == "❓") {
@@ -85,6 +88,7 @@ class NotesAdapter(
             Log.d("NotesAdapter", "Checkbox clicked for note '${note.title}', selected: ${note.isSelected}")
         }
     }
+
 
     override fun getItemCount(): Int = notes.size
 
