@@ -103,4 +103,5 @@
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/delete_selected" />
 
+
 </RelativeLayout>
