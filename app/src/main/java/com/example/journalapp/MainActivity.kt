@@ -161,13 +161,25 @@ class MainActivity : AppCompatActivity() {
         val note = notesAdapter.notes[position]
         note.isSelected = !note.isSelected
 
-        if (note.isSelected) selectedNotes.add(note) else selectedNotes.remove(note)
+        if (note.isSelected) {
+            selectedNotes.add(note)
+        } else {
+            selectedNotes.remove(note)
+        }
 
         notesAdapter.notifyItemChanged(position)
 
+        // Update delete button visibility
         binding.deleteButton.visibility = if (selectedNotes.isEmpty()) View.GONE else View.VISIBLE
+        // Reset selection mode if no notes are selected
         isInSelectionMode = selectedNotes.isNotEmpty()
+        if (!isInSelectionMode) {
+            binding.plusButton.isEnabled = true // Re-enable the add button
+        } else {
+            binding.plusButton.isEnabled = false // Disable add button while in selection mode
+        }
     }
+
 
     private fun deleteSelectedNotes() {
         notesAdapter.notes.removeAll(selectedNotes)
@@ -175,8 +187,12 @@ class MainActivity : AppCompatActivity() {
         saveNotesToFile(notesAdapter.notes)
         selectedNotes.clear()
         isInSelectionMode = false
+
+        // Reset button visibility and enable the add button
         binding.deleteButton.visibility = View.GONE
+        binding.plusButton.isEnabled = true
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
