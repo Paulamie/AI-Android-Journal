@@ -190,8 +190,23 @@ class NoteDetailActivity : AppCompatActivity() {
         val file = File(filesDir, "notes.json")
         if (file.exists()) {
             val json = file.readText()
-            val type = object : TypeToken<List<Note>>() {}.type
-            notes = Gson().fromJson(json, type)
+            try {
+                // Parse as NotesResponse (current structure)
+                val response = Gson().fromJson(json, NotesResponse::class.java)
+                notes = response.notes.toMutableList() // Update notes list
+                Log.d("LoadNotes", "Loaded ${notes.size} notes as NotesResponse")
+            } catch (e: Exception) {
+                Log.e("LoadNotes", "Error parsing JSON as NotesResponse: ${e.message}")
+                try {
+                    // Fallback: Parse as List<Note> (if previous format)
+                    val noteListType = object : TypeToken<List<Note>>() {}.type
+                    notes = Gson().fromJson(json, noteListType)
+                    Log.d("LoadNotes", "Fallback: Loaded ${notes.size} notes as List<Note>")
+                } catch (e2: Exception) {
+                    Log.e("LoadNotes", "Error parsing JSON: ${e2.message}")
+                    Toast.makeText(this, "Error loading notes", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

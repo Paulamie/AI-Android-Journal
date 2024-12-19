@@ -40,7 +40,7 @@ class NotesAdapter(
         // Only fetch mood emoji if it's not already set
         if (holder.emoji.text.isEmpty() || holder.emoji.text == "❓") {
             val apiService = Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:5001/") // Replace with your server's URL
+                .baseUrl("http://10.0.2.2:5000/") // Replace with your server's URL
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService::class.java)

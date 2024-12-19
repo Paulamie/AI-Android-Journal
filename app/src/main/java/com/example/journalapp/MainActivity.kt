@@ -24,6 +24,8 @@ import java.io.File
 import android.widget.RemoteViews
 import java.io.InputStream
 import java.util.Calendar
+import com.google.gson.reflect.TypeToken
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     // Retrofit instance for API service
     private val retrofit = Retrofit.Builder()
-        .baseUrl("http://10.0.2.2:5001/") // Replace with your actual server URL
+        .baseUrl("http://10.0.2.2:5000/") // Replace with your actual server URL
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -122,18 +124,24 @@ class MainActivity : AppCompatActivity() {
         val json = loadNotesFromPrivateStorage() ?: loadNotesFromAssets()
         if (json != null) {
             try {
-                // Parse JSON as a NotesResponse object, then extract the notes list
+                // Parse JSON as NotesResponse
                 val response = Gson().fromJson(json, NotesResponse::class.java)
-                notesList = response.notes.toMutableList()  // Update the notes list
-
-                // Update the adapter with the parsed notes
-                notesAdapter.updateNotes(notesList)
-                Log.d("ReloadNotes", "Loaded ${notesList.size} notes")
-
+                notesList = response.notes.toMutableList()
+                Log.d("ReloadNotes", "Loaded ${notesList.size} notes as NotesResponse")
             } catch (e: Exception) {
-                Log.e("ReloadNotes", "Error parsing JSON: ${e.message}")
-                Toast.makeText(this, "Error loading notes", Toast.LENGTH_SHORT).show()
+                Log.e("ReloadNotes", "Error parsing JSON as NotesResponse: ${e.message}")
+                try {
+                    // Fallback: Parse JSON as List<Note>
+                    val noteListType = object : TypeToken<List<Note>>() {}.type
+                    notesList = Gson().fromJson(json, noteListType)
+                    Log.d("ReloadNotes", "Fallback: Loaded ${notesList.size} notes as List<Note>")
+                } catch (e2: Exception) {
+                    Log.e("ReloadNotes", "Error parsing JSON: ${e2.message}")
+                    Toast.makeText(this, "Error loading notes", Toast.LENGTH_SHORT).show()
+                }
             }
+
+            notesAdapter.updateNotes(notesList) // Update adapter
         } else {
             Log.e("ReloadNotes", "Failed to load JSON from storage or assets")
             Toast.makeText(this, "Failed to load notes data", Toast.LENGTH_SHORT).show()
@@ -200,11 +208,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveNotesToFile(notes: List<Note>) {
-        val json = Gson().toJson(notes)
+        val json = Gson().toJson(NotesResponse(notes)) // Save notes inside NotesResponse
         val file = File(filesDir, "notes.json")
         try {
             file.writeText(json)
+            Log.d("SaveNotes", "JSON saved: $json")
         } catch (e: Exception) {
+            Log.e("SaveNotes", "Error saving notes: ${e.message}")
             Toast.makeText(this, "Error saving notes", Toast.LENGTH_SHORT).show()
         }
     }
