@@ -2,14 +2,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    style="@style/TextAppearance.PlayfairDisplay"
     android:layout_height="match_parent">
 
-    <!-- Toolbar at the top -->
-
-    <!-- streak icon -->
-
-    <!-- Get Advice Button -->
-
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -19,17 +15,19 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/app_name" />
 
-    <Button
-        android:id="@+id/streakIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@id/toolbar"
-        android:layout_centerHorizontal="false"
-        android:background="#00FFFFFF"
-        android:backgroundTint="#00FFFFFF"
-        android:contentDescription="@string/streak_icon_description"
-        android:src="@drawable/streak_icon" />
+    <!-- Notes RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/AIbot"
+        android:layout_above="@id/plusButton"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:padding="8dp" />
 
+
+        <!-- API Button -->
     <Button
         android:id="@+id/apiButton"
         android:layout_width="wrap_content"
@@ -42,7 +40,7 @@
         android:textColor="@android:color/white"
         style="@style/Widget.AppCompat.Button.Colored" />
 
-    <!-- Refresh Button (initially hidden) -->
+    <!-- Refresh Button -->
     <ImageButton
         android:id="@+id/refreshButton"
         android:layout_width="48dp"
@@ -56,7 +54,7 @@
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:elevation="8dp" />
 
-    <!-- AI Bot RecyclerView for displaying advice -->
+    <!-- Notes RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/AIbot"
         android:layout_width="match_parent"
@@ -67,18 +65,7 @@
         android:padding="8dp"
         android:clipToPadding="false" />
 
-    <!-- Notes RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/notesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_below="@id/AIbot"
-        android:layout_above="@id/plusButton"
-        android:layout_marginTop="8dp"
-        android:padding="8dp"
-        android:clipToPadding="false" />
-
-    <!-- Plus Button (centered at the bottom) -->
+    <!-- Plus Button -->
     <ImageButton
         android:id="@+id/plusButton"
         android:layout_width="70dp"
@@ -90,7 +77,7 @@
         android:src="@drawable/ic_plus_blue"
         android:contentDescription="@string/plus_button" />
 
-    <!-- Delete Button for removing selected notes -->
+    <!-- Delete Button -->
     <ImageButton
         android:id="@+id/deleteButton"
         android:layout_width="56dp"

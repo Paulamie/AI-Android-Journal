@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.Bundle
-import android.os.ParcelFileDescriptor
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,6 +15,13 @@ import com.google.gson.reflect.TypeToken
 import java.io.File
 import java.io.InputStream
 import android.util.Log
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.*
+import java.lang.reflect.Type
+
+
 
 
 data class QuestionsWrapper(val questions: List<String>)
@@ -56,9 +62,11 @@ class NoteDetailActivity : AppCompatActivity() {
         binding.confirmQuestionButton.setOnClickListener { confirmQuestion() }
 
         currentIndex = intent.getIntExtra("NOTE_ID", -1)
-        if (currentIndex != -1) {
-            loadNoteForEditing(currentIndex)
+        if (currentIndex != -1 && currentIndex < notes.size) {
+            loadNoteForEditing(notes[currentIndex])
         }
+
+
 
         binding.btnSave.setOnClickListener {
             if (currentIndex == -1) {
@@ -85,18 +93,20 @@ class NoteDetailActivity : AppCompatActivity() {
         binding.selectedFileName.visibility = View.VISIBLE
 
         if (fileType.startsWith("image/")) {
-            // Display image
             binding.fileImageView.visibility = View.VISIBLE
             binding.fileImageView.setImageURI(uri)
         } else if (fileType == "application/pdf") {
-            // Render PDF preview
             renderPdfPreview(uri)
+        } else {
+            // Unsupported file type
+            binding.fileImageView.visibility = View.GONE
+            binding.selectedFileName.text = getString(R.string.unsupported_file_type)
         }
 
-        // Show file name
         val documentFile = DocumentFile.fromSingleUri(this, uri)
         binding.selectedFileName.text = documentFile?.name ?: getString(R.string.file_selected)
     }
+
 
 
     private fun renderPdfPreview(uri: Uri) {
@@ -118,58 +128,52 @@ class NoteDetailActivity : AppCompatActivity() {
     }
 
 
-    private fun loadNoteForEditing(noteId: Int) {
-        if (noteId in notes.indices) {
-            val note = notes[noteId]
-            binding.etNoteTitle.setText(note.title)
-            binding.etNoteContent.setText(note.content)
-
-            note.fileUri?.let {
-                selectedFileUri = Uri.parse(it)
-                val fileType = contentResolver.getType(selectedFileUri!!)
-                Log.d("NoteDetailActivity", "File URI: $it")
-                Log.d("NoteDetailActivity", "File Type: $fileType")
-
-                if (fileType != null) {
-                    displayFilePreview(selectedFileUri!!, fileType)
-                } else {
-                    Log.e("NoteDetailActivity", "Unsupported file type for URI: $it")
-                    binding.fileImageView.visibility = View.GONE
-                    binding.selectedFileName.visibility = View.VISIBLE
-                    binding.selectedFileName.text = getString(R.string.file_selected)
-                }
-            } ?: run {
-                Log.w("NoteDetailActivity", "No file URI found for note.")
-                binding.fileImageView.visibility = View.GONE
-                binding.selectedFileName.visibility = View.GONE
+    private fun loadNotes() {
+        val file = File(filesDir, "notes.json")
+        if (file.exists()) {
+            val json = file.readText()
+            try {
+                val noteListType: Type = object : TypeToken<List<Note>>() {}.type
+                val parsedNotes: List<Note> = Gson().fromJson(json, noteListType)
+                notes = parsedNotes.toMutableList()
+                Log.d("LoadNotes", "Successfully loaded ${notes.size} notes")
+            } catch (e: Exception) {
+                Log.e("LoadNotes", "Error parsing JSON: ${e.message}")
+                notes = mutableListOf() // Initialize notes in case of error
             }
         }
     }
 
+
     private fun addNote() {
         val newTitle = binding.etNoteTitle.text.toString()
         val newContent = binding.etNoteContent.text.toString()
-        val noteFileUri = selectedFileUri?.toString() // Save the file URI
 
-        notes.add(Note(newTitle, newContent, noteFileUri)) // Add new note to the list
-        saveNotesToFile() // Save all notes to a JSON file
+        val newNote = Note(
+            title = newTitle,
+            content = newContent,
+            fileUri = selectedFileUri?.toString(),
+            date = getCurrentDate()
+        )
+
+        notes.add(newNote) // Add to the global list
+        saveNotesToFile() // Save updated notes
         setResult(RESULT_OK)
         finish()
     }
 
-
     private fun updateNote() {
         val updatedTitle = binding.etNoteTitle.text.toString()
         val updatedContent = binding.etNoteContent.text.toString()
-        val noteFileUri = selectedFileUri?.toString() // Save the updated file URI
 
         if (currentIndex in notes.indices) {
             notes[currentIndex] = notes[currentIndex].copy(
                 title = updatedTitle,
                 content = updatedContent,
-                fileUri = noteFileUri // Update the file URI
+                fileUri = selectedFileUri?.toString(), // Include fileUri here
+                date = getCurrentDate()
             )
-            saveNotesToFile() // Save all notes to a JSON file
+            saveNotesToFile() // Save updated notes
             setResult(RESULT_OK)
             finish()
         } else {
@@ -177,39 +181,30 @@ class NoteDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadNoteForEditing(note: Note) {
+        binding.etNoteTitle.setText(note.title)
+        binding.etNoteContent.setText(note.content)
+        binding.noteDate.text = note.date
 
-    private fun saveNotesToFile() {
-        val json = Gson().toJson(notes)
-        val file = File(filesDir, "notes.json")
-        file.writeText(json)
-        Log.d("SaveNotes", "Notes saved to: ${file.absolutePath}")
-    }
-
-
-    private fun loadNotes() {
-        val file = File(filesDir, "notes.json")
-        if (file.exists()) {
-            val json = file.readText()
-            try {
-                // Parse as NotesResponse (current structure)
-                val response = Gson().fromJson(json, NotesResponse::class.java)
-                notes = response.notes.toMutableList() // Update notes list
-                Log.d("LoadNotes", "Loaded ${notes.size} notes as NotesResponse")
-            } catch (e: Exception) {
-                Log.e("LoadNotes", "Error parsing JSON as NotesResponse: ${e.message}")
-                try {
-                    // Fallback: Parse as List<Note> (if previous format)
-                    val noteListType = object : TypeToken<List<Note>>() {}.type
-                    notes = Gson().fromJson(json, noteListType)
-                    Log.d("LoadNotes", "Fallback: Loaded ${notes.size} notes as List<Note>")
-                } catch (e2: Exception) {
-                    Log.e("LoadNotes", "Error parsing JSON: ${e2.message}")
-                    Toast.makeText(this, "Error loading notes", Toast.LENGTH_SHORT).show()
-                }
+        note.fileUri?.let {
+            selectedFileUri = Uri.parse(it)
+            val fileType = contentResolver.getType(selectedFileUri!!)
+            if (fileType != null) {
+                displayFilePreview(selectedFileUri!!, fileType)
             }
         }
     }
 
+    private fun saveNotesToFile() {
+        val json = Gson().toJson(notes)
+        val file = File(filesDir, "notes.json")
+        try {
+            file.writeText(json)
+            Log.d("SaveNotes", "Notes saved successfully: ${notes.size} notes")
+        } catch (e: Exception) {
+            Log.e("SaveNotes", "Error saving notes: ${e.message}")
+        }
+    }
 
     private fun loadQuestions() {
         try {
@@ -239,4 +234,20 @@ class NoteDetailActivity : AppCompatActivity() {
         binding.confirmQuestionButton.visibility = View.GONE
         binding.randomQuestionText.visibility = View.GONE
     }
+
+
+
+    private fun getCurrentDate(): String {
+        val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        return dateFormatter.format(Date())
+    }
+
+
+    private fun loadNotesFromPrivateStorage(): String? {
+        val file = File(filesDir, "notes.json")
+        return if (file.exists()) {
+            file.readText()
+        } else null
+    }
+
 }

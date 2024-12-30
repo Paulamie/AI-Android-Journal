@@ -1,9 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Streak Action -->
     <item
-        android:id="@+id/action_streak"
+        android:id="@+id/streakIcon"
         android:icon="@drawable/streak_icon"
-        android:title="Streak"
-        app:showAsAction="always" />
+        android:title="@string/streak"
+        app:showAsAction="always"
+        android:contentDescription="@string/streak_icon" />
+
+
+    <!-- Search Action -->
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 </menu>

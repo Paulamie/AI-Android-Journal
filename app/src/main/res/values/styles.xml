@@ -2,7 +2,22 @@
 <resources>
 
     <style name="Theme.JournalApp.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
     </style>
+
+    <style name="TextAppearance.PlayfairDisplay" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/playfair</item>
+    </style>
+
+    <style name="TextAppearance.PlayfairDisplay.Large">
+        <item name="android:fontFamily">@font/playfair</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextAppearance.PlayfairDisplay.Small">
+        <item name="android:fontFamily">@font/playfair</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+>
+
 
 </resources>

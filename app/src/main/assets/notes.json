@@ -1,10 +1,9 @@
-{
-  "notes": [
-    {
-      "content": "",
-      "fileUri": "...",
-      "isSelected": false,
-      "title": "..."
-    }
-  ]
-}
+[
+  {
+    "title": "My First Note",
+    "content": "This is the content of my note.",
+    "date": "01 Jan 2024",
+    "fileUri": null,
+    "isSelected": false
+  }
+]

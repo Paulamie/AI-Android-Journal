@@ -35,4 +35,15 @@
     <string name="file_preview">File Preview</string>
     <string name="file_name_placeholder">File Name</string>
     <string name="preview_image">Image or file preview</string>
+
+    <string name="unsupported_file_type">Unsupported file type</string>
+
+    <string name="search">Search File</string>
+
+    <string name="streak_icon">Streak Icon</string>
+    <string name="streak">Streak</string>
+    <string name="ic_search">Search</string>
+
+
+
 </resources>

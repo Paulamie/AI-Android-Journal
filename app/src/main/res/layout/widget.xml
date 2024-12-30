@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/purple_700"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -12,18 +10,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Current Streak: 0"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@android:color/white"
         android:textSize="20sp"
-        android:contentDescription="Displays the current streak count" />
+        style="@style/TextAppearance.PlayfairDisplay"
+        android:textColor="@android:color/black" />
 
     <Button
         android:id="@+id/widget_open_app_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/purple_500"
-        android:text="Open Journal App"
+        android:text="Open App"
         android:textColor="@android:color/white"
-        android:contentDescription="Button to open the Journal App" />
+        android:background="@android:color/holo_blue_dark" />
 </LinearLayout>

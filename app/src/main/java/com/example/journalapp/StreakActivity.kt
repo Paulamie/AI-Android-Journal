@@ -18,11 +18,11 @@ class StreakActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Inflate the layout using View Binding
+        // Bind to the streak layout
         binding = StreakBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Load streak data and update the UI
+        // Load and display the streak data
         loadStreakData()
     }
 

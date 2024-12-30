@@ -8,15 +8,16 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Card-like container for streak details -->
     <LinearLayout
-        android:layout_width="306dp"
-        android:layout_height="351dp"
-        android:background="@drawable/streak"
-        android:backgroundTint="#308F7CB1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/streak_card_background"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="24dp">
 
+        <!-- Streak Count -->
         <TextView
             android:id="@+id/streakCountTextView"
             android:layout_width="wrap_content"
@@ -25,25 +26,31 @@
             android:text="0"
             android:textColor="@color/purple_700"
             android:textSize="48sp"
+            style="@style/TextAppearance.PlayfairDisplay"
             android:textStyle="bold" />
 
+        <!-- Last Active Date -->
         <TextView
             android:id="@+id/lastActiveDateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:gravity="end"
+            android:gravity="center"
             android:text="Last Active: Never"
+            style="@style/TextAppearance.PlayfairDisplay"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="14sp" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/viewDetailsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="View Details"
-        android:textColor="@android:color/white"
-        android:visibility="gone" />
+
+<!--    &lt;!&ndash; View Details Button &ndash;&gt;-->
+<!--    <Button-->
+<!--        android:id="@+id/viewDetailsButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:text="View Details"-->
+<!--        android:textColor="@android:color/white"-->
+<!--        android:backgroundTint="@color/colorPrimary"-->
+<!--        android:visibility="visible" />-->
 </LinearLayout>

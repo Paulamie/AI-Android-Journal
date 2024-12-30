@@ -14,23 +14,28 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class NotesAdapter(
-    var notes: MutableList<Note>, // Mutable list for easy updates and deletion
+    private val notes: MutableList<Note>,
     private val onNoteClicked: (Int) -> Unit,
     private val onNoteLongClicked: (Int) -> Unit
 ) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
+
+    // Public getter to access notes outside the adapter
+    fun getNotes(): List<Note> {
+        return notes
+    }
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.noteTitle)
         val content: TextView = itemView.findViewById(R.id.noteContent)
         val emoji: TextView = itemView.findViewById(R.id.noteEmoji)
-        val checkBox: CheckBox = itemView.findViewById(R.id.noteCheckBox) // The checkbox
+        val checkBox: CheckBox = itemView.findViewById(R.id.noteCheckBox)
+        val dateTextView: TextView = itemView.findViewById(R.id.note_date)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
         return NoteViewHolder(view)
     }
-
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = notes[position]
@@ -40,10 +45,12 @@ class NotesAdapter(
         val firstLine = note.content.lines().firstOrNull() ?: ""
         holder.content.text = firstLine
 
-        // Only fetch mood emoji if it's not already set
-        if (holder.emoji.text.isEmpty() || holder.emoji.text == "❓") {
+        holder.dateTextView.text = note.date
+
+        // Fetch mood emoji if it's not already set
+        if (note.emoji.isNullOrEmpty() || note.emoji == "❓") {
             val apiService = Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:5000/") // Replace with your server's URL
+                .baseUrl("http://10.0.2.2:5001/") // Replace with your server's URL
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService::class.java)
@@ -53,7 +60,8 @@ class NotesAdapter(
                 override fun onResponse(call: Call<MoodResponse>, response: Response<MoodResponse>) {
                     if (response.isSuccessful) {
                         val moodEmoji = response.body()?.mood ?: "❓"
-                        holder.emoji.text = moodEmoji // Set the emoji
+                        note.emoji = moodEmoji // Update the note's emoji
+                        holder.emoji.text = moodEmoji
                         Log.d("NotesAdapter", "Mood for note '${note.title}': $moodEmoji")
                     } else {
                         holder.emoji.text = "❓" // Fallback emoji
@@ -66,6 +74,8 @@ class NotesAdapter(
                     Log.e("NotesAdapter", "Error fetching mood: ${t.message}")
                 }
             })
+        } else {
+            holder.emoji.text = note.emoji // Use the already fetched emoji
         }
 
         // Set checkbox visibility and state
@@ -84,18 +94,23 @@ class NotesAdapter(
 
         holder.checkBox.setOnClickListener {
             note.isSelected = !note.isSelected
-            notifyItemChanged(position)
+            notifyItemChanged(holder.bindingAdapterPosition) // Correctly update the item
             Log.d("NotesAdapter", "Checkbox clicked for note '${note.title}', selected: ${note.isSelected}")
         }
     }
 
-
     override fun getItemCount(): Int = notes.size
 
+    // Update the notes list
     fun updateNotes(newNotes: List<Note>) {
+        val previousSize = notes.size
         notes.clear()
         notes.addAll(newNotes)
-        notifyDataSetChanged()
+        if (previousSize == newNotes.size) {
+            notifyItemRangeChanged(0, newNotes.size) // Update existing items
+        } else {
+            notifyDataSetChanged() // Use full refresh for differing sizes
+        }
         Log.d("NotesAdapter", "Adapter updated with ${newNotes.size} notes")
     }
 }
