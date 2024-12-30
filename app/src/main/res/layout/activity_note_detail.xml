@@ -29,6 +29,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintTop_toBottomOf="@id/noteDate"
         app:layout_constraintStart_toStartOf="parent"
+        app:tint="@color/icon_color"
         android:layout_marginTop="16dp"
         android:padding="12dp" />
 

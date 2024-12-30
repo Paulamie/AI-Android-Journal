@@ -213,7 +213,6 @@ class MainActivity : AppCompatActivity() {
 
         // Update delete button visibility
         binding.deleteButton.visibility = if (selectedNotes.isEmpty()) View.GONE else View.VISIBLE
-
         // Reset selection mode if no notes are selected
         isInSelectionMode = selectedNotes.isNotEmpty()
         if (!isInSelectionMode) {
@@ -226,17 +225,25 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun deleteSelectedNotes() {
-        val notes = notesAdapter.getNotes().toMutableList() // Convert to mutable list
-        notesList.removeAll(selectedNotes) // Correct
-        notesAdapter.updateNotes(notes) // Update adapter
-        saveNotesToFile() // Save updated notes to file
-        selectedNotes.clear()
-        isInSelectionMode = false
+        // Remove selected notes from the main notes list
+        notesList.removeAll(selectedNotes)
 
-        // Reset button visibility and enable the add button
+        // Clear selected notes list
+        selectedNotes.clear()
+
+        // Update the adapter with the modified notes list
+        notesAdapter.updateNotes(notesList)
+
+        // Save the updated notes to the file
+        saveNotesToFile()
+
+        // Exit selection mode and reset UI elements
+        isInSelectionMode = false
         binding.deleteButton.visibility = View.GONE
         binding.plusButton.isEnabled = true
     }
+
+
 
 
 

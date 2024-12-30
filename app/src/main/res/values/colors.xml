@@ -10,6 +10,8 @@
     <color name="black">#000000</color>
     <color name="dark_gray">#786F80</color>
     <color name="light_gray">#DAD8C9</color>
+    <color name="icon_color">#8000FF</color>
+
 
 
 </resources>

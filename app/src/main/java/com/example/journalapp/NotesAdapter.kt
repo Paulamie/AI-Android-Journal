@@ -101,16 +101,11 @@ class NotesAdapter(
 
     override fun getItemCount(): Int = notes.size
 
-    // Update the notes list
     fun updateNotes(newNotes: List<Note>) {
-        val previousSize = notes.size
-        notes.clear()
-        notes.addAll(newNotes)
-        if (previousSize == newNotes.size) {
-            notifyItemRangeChanged(0, newNotes.size) // Update existing items
-        } else {
-            notifyDataSetChanged() // Use full refresh for differing sizes
-        }
+        notes.clear() // Clear current list
+        notes.addAll(newNotes) // Add all new notes
+        notifyDataSetChanged() // Notify adapter of the full data refresh
         Log.d("NotesAdapter", "Adapter updated with ${newNotes.size} notes")
     }
+
 }
